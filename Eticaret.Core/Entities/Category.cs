@@ -16,7 +16,7 @@ namespace Eticaret.Core.Entities
         public bool IsTopMenu { get; set; }
         public int ParentId { get; set; }
         public int OrderNo { get; set; }
-        public DateTime CreateDate { get; set; }
+        public DateTime CreateDate { get; set; } = DateTime.Now;
         public IList<Product>? Products { get; set; }
     }
 }
