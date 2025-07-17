@@ -1,3 +1,5 @@
+using Eticaret.Data;
+
 namespace Eticaret.WebUI
 {
     public class Program
@@ -8,6 +10,7 @@ namespace Eticaret.WebUI
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<DatabaseContext>();
 
             var app = builder.Build();
 
@@ -25,6 +28,9 @@ namespace Eticaret.WebUI
             app.UseRouting();
 
             app.UseAuthorization();
+            app.MapControllerRoute(
+            name: "admin",
+            pattern: "{area:exists}/{controller=Main}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",
