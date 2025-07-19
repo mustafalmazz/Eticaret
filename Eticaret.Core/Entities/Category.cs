@@ -20,7 +20,7 @@ namespace Eticaret.Core.Entities
         public bool IsActive { get; set; }
         [Display(Name = "Üst Menüde Göster")]
         public bool IsTopMenu { get; set; }
-        [Display(Name = "üst Kategori")]
+        [Display(Name = "Üst Kategori")]
         public int ParentId { get; set; }
         [Display(Name = "Sıra No")]
         public int OrderNo { get; set; }
