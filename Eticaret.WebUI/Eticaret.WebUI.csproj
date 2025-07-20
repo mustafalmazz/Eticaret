@@ -32,7 +32,7 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="wwwroot\Img\Categories\" />
     <Folder Include="wwwroot\Img\Products\" />
-    <Folder Include="wwwroot\Img\Silder\" />
+    <Folder Include="wwwroot\Img\Sliders\" />
   </ItemGroup>
 
 </Project>
