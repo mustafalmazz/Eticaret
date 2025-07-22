@@ -16,6 +16,8 @@ namespace Eticaret.Data.Configurations
             builder.Property(x => x.ProductCode)
                 .IsRequired()
                 .HasMaxLength(50);
+            builder.Property(x => x.Price)
+            .HasColumnType("decimal(18,2)");
         }
     }
     

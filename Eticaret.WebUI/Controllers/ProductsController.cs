@@ -12,9 +12,9 @@ namespace Eticaret.WebUI.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string q = "")
         {
-            var databasecontext = _context.Products.Where(p=>p.IsActive).Include(p=>p.Brand).Include(p=>p.Category);
+            var databasecontext = _context.Products.Where(p=>p.IsActive &&p.Name.Contains(q) || p.Description.Contains(q) || p.Brand.Name.Contains(q)).Include(p=>p.Brand).Include(p=>p.Category);
             return View(await databasecontext.ToListAsync());
         }
         public async Task<IActionResult> Details(int? id)
