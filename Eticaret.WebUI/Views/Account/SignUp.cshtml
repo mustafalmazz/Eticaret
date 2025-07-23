@@ -1,16 +1,14 @@
-﻿@model Contact
+﻿@model AppUser
 
 @{
-    ViewData["Title"] = "İletişim";
+    ViewData["Title"] = "Üye Ol";
 }
 
-<div class="text-center">
-    <h1 class="display-4" >İletişim</h1>
-</div>
-<hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="ContactUs">
+    <div class="col-md-4 m-auto my-5">
+        <h1>Üye Ol</h1>
+        <hr />
+        <form asp-action="SignUp">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -33,22 +31,18 @@
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Message" class="control-label"></label>
-                <textarea asp-for="Message" class="form-control"></textarea>
-                <span asp-validation-for="Message" class="text-danger"></span>
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password"  class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group mt-2">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Kaydol" class="btn btn-primary" />
             </div>
         </form>
     </div>
-    <div class="col-md-8">
-        <h5>Bize Ulaşın</h5>
-        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d577005.7411059113!2d29.007416562172562!3d41.05513517258035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1str!2str!4v1753263561142!5m2!1str!2str" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
