@@ -4,9 +4,10 @@ namespace Eticaret.WebUI.Models
 {
     public class LoginViewModel
     {
-        [Display(Name = "Kullanıcı Adı"), Required(ErrorMessage = "{0} alanı zorunludur!")]
+        [DataType(DataType.EmailAddress), Required(ErrorMessage = "Email Boş Geçilemez!")]
         public string Email { get; set; }
-        [Display(Name = "Kullanıcı Adı"), Required(ErrorMessage = "{0} alanı zorunludur!"),DataType(DataType.Password)]
+        [Display(Name = "Şifre"), Required(ErrorMessage = "Şifre Boş Geçilemez!")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
         public string? ReturnUrl { get; set; }
         public bool RememberMe { get; set; }

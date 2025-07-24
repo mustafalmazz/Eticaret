@@ -1,4 +1,6 @@
 using Eticaret.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace Eticaret.WebUI
 {
@@ -11,6 +13,21 @@ namespace Eticaret.WebUI
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<DatabaseContext>();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(a =>
+            {
+                a.LoginPath = "/Account/SignIn";
+                a.AccessDeniedPath = "/AccessDenied";
+                a.Cookie.Name = "Account";
+                a.Cookie.MaxAge = TimeSpan.FromDays(7);
+                a.Cookie.IsEssential = true;
+            });
+
+            builder.Services.AddAuthorization(m =>
+            {
+                m.AddPolicy("AdminPolicy",policy=>policy.RequireClaim(ClaimTypes.Role,"Admin"));
+                m.AddPolicy("UserPolicy",policy=>policy.RequireClaim(ClaimTypes.Role,"Admin","User","Customer"));
+            });
 
             var app = builder.Build();
 
@@ -27,7 +44,8 @@ namespace Eticaret.WebUI
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication(); // önce oturum açma 
+            app.UseAuthorization();// sonra yetkilendirme
             app.MapControllerRoute(
             name: "admin",
             pattern: "{area:exists}/{controller=Main}/{action=Index}/{id?}");
