@@ -32,6 +32,11 @@ namespace Eticaret.WebUI.Controllers
         {
             return View();
         }
+        //[Route("AccesDenied")]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
         public IActionResult ContactUs()
         {
             return View();

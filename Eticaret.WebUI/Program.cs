@@ -12,12 +12,22 @@ namespace Eticaret.WebUI
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddSession(options =>
+            {
+                options.Cookie.Name = ".Eticaret.Session";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.IdleTimeout = TimeSpan.FromDays(1);
+                options.IOTimeout = TimeSpan.FromMinutes(10);
+            });
+
             builder.Services.AddDbContext<DatabaseContext>();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(a =>
             {
                 a.LoginPath = "/Account/SignIn";
-                a.AccessDeniedPath = "/AccessDenied";
+                a.AccessDeniedPath = "/Home/AccessDenied";
                 a.Cookie.Name = "Account";
                 a.Cookie.MaxAge = TimeSpan.FromDays(7);
                 a.Cookie.IsEssential = true;
@@ -43,6 +53,7 @@ namespace Eticaret.WebUI
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession(); //session kullanmaya yarar
 
             app.UseAuthentication(); // önce oturum açma 
             app.UseAuthorization();// sonra yetkilendirme

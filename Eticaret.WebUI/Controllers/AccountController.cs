@@ -80,5 +80,10 @@ namespace Eticaret.WebUI.Controllers
             }
             return View(appUser);
         }
+        public async Task<IActionResult> SignOutAsync()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("SignIn");
+        }
     }
 }
