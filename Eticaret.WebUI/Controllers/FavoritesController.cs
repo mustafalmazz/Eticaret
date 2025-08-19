@@ -1,5 +1,5 @@
 ﻿using Eticaret.Core.Entities;
-using Eticaret.Data;
+using Eticaret.Service.Abstract;
 using Eticaret.WebUI.ExtensionMethods;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,10 +7,11 @@ namespace Eticaret.WebUI.Controllers
 {
     public class FavoritesController : Controller
     {
-        private readonly DatabaseContext _context;
-        public FavoritesController(DatabaseContext context)
+        private readonly IService<Product> _service;
+
+        public FavoritesController(IService<Product> service)
         {
-            _context = context;
+            _service = service;
         }
         public IActionResult Index()
         {
@@ -24,7 +25,7 @@ namespace Eticaret.WebUI.Controllers
         public IActionResult Add(int ProductId)
         {
             var favoriler = GetFavorites();
-            var product = _context.Products.Find(ProductId);
+            var product = _service.Find(ProductId);
             if (product != null && !favoriler.Any(p=>p.Id == ProductId))
             {
                 favoriler.Add(product);
@@ -36,7 +37,7 @@ namespace Eticaret.WebUI.Controllers
         public IActionResult Remove(int ProductId)
         {
             var favoriler = GetFavorites();
-            var product = _context.Products.Find(ProductId);
+            var product = _service.Find(ProductId);
             if (product != null && favoriler.Any(p=>p.Id == ProductId))
             {
                 favoriler.RemoveAll(i=>i.Id == product.Id);

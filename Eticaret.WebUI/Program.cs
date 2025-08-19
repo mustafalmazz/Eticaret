@@ -1,4 +1,6 @@
 using Eticaret.Data;
+using Eticaret.Service.Abstract;
+using Eticaret.Service.Concrete;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 
@@ -21,8 +23,10 @@ namespace Eticaret.WebUI
                 options.IdleTimeout = TimeSpan.FromDays(1);
                 options.IOTimeout = TimeSpan.FromMinutes(10);
             });
-
+           
             builder.Services.AddDbContext<DatabaseContext>();
+
+            builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(a =>
             {
