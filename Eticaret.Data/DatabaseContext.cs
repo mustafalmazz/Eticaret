@@ -9,6 +9,7 @@ namespace Eticaret.Data
     public class DatabaseContext : DbContext
     {
         public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<Address> Addresses { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Contact> Contacts { get; set; }
@@ -19,9 +20,10 @@ namespace Eticaret.Data
         {
             optionsBuilder.UseSqlServer(@"Server=DESKTOP-I5GQS4M\SQLEXPRESS; DataBase=EticaretDb2; Trusted_Connection=True; TrustServerCertificate=True;");
 
-
-            //optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning)); 
-            //base.OnConfiguring(optionsBuilder); // bende bu hata yok
+            optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(
+                RelationalEventId.PendingModelChangesWarning));
+           
+            base.OnConfiguring(optionsBuilder); 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

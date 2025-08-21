@@ -1,0 +1,81 @@
+﻿@model CheckOutViewModel
+@{
+    ViewData["Title"] = "Satın Al";
+}
+
+<section class="container my-5">
+    <div class="text-center">
+        <h1 class="display-4">Satın Al</h1>
+    </div>
+    <div class="row">
+        @if (Model.CartProducts.Any())
+        {
+            <div class="col-md-8">
+                <div class="table-responsive">
+
+                    <table class="table table-striped table-hover">
+                        <tr>
+                            <th></th>
+                            <th>Ürün</th>
+                            <th>Fiyat</th>
+                            <th>Miktar</th>
+                            <th>Toplam</th>
+                        </tr>
+                        <tbody>
+                            @foreach (var item in Model.CartProducts)
+                            {
+                                <tr>
+                                    <td><img src="/Img/Products/@item.Product.Image" alt="" height="37" /></td>
+                                    <td>
+                                        <a class="nav-link text-dark" href="/Products/Details/@item.Product.Id">
+                                            @item.Product.Name
+                                        </a>
+                                    </td>
+                                    <td>@item.Product.Price.ToString("c")</td>
+                                    <td>
+                                        @item.Quantity
+                                    </td>
+                                    <td>@((item.Quantity * item.Product.Price).ToString("c"))</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div>
+                    <h4>
+                        Sipariş Özeti
+                    </h4>
+                </div>
+                <table class="table">
+                    <tr>
+                        <td>Ürün Toplamı</td>
+                        <td>@Model.TotalPrice.ToString("c")</td>
+                    </tr>
+                    <tr>
+                        <td>Kargo</td>
+                        <td>
+                            @(Model.TotalPrice > 999 ? "Ücretsiz" : Model.CartProducts.Any() ? "99₺" : "0₺")
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Sipariş Toplamı</th>
+                        <td>
+                            @(Model.TotalPrice > 999 ? Model.TotalPrice.ToString("c") : (Model.CartProducts.Any() ? Model.TotalPrice + 99 : Model.TotalPrice.ToString("c")))
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="container">
+                <div class="alert alert-warning my-5">
+                    <h3>Sepetinizde Ürün Bulunmamaktadır! </h3>
+                </div>
+            </div>
+        }
+    </div>
+</section>

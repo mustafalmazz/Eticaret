@@ -3,6 +3,7 @@ using Eticaret.Service.Abstract;
 using Eticaret.Service.Concrete;
 using Eticaret.WebUI.ExtensionMethods;
 using Eticaret.WebUI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eticaret.WebUI.Controllers
@@ -37,6 +38,7 @@ namespace Eticaret.WebUI.Controllers
                 var cart = GetCart();
                 cart.AddProduct(product , quantity);
                 HttpContext.Session.SetJson("Cart", cart);
+                return Redirect(Request.Headers["Referer"].ToString());
             }
             return RedirectToAction("Index");
         }
@@ -61,6 +63,17 @@ namespace Eticaret.WebUI.Controllers
                 HttpContext.Session.SetJson("Cart", cart);
             }
             return RedirectToAction("Index");
+        }
+        [Authorize]
+        public IActionResult Checkout()
+        {
+            var cart = GetCart();
+            var model = new CheckOutViewModel()
+            {
+                CartProducts = cart.CartLines,
+                TotalPrice = cart.TotalPrice()
+            };
+            return View(model);
         }
     }
 }

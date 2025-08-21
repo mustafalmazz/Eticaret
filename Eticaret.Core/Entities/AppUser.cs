@@ -26,7 +26,8 @@ namespace Eticaret.Core.Entities
         [Display(Name = "Kayıt Tarihi"),ScaffoldColumn(false)]
         public DateTime CreateDate { get; set; } = DateTime.Now;
         [ScaffoldColumn(false)]
-        public Guid? UserGuid { get; set; } = Guid.NewGuid(); 
+        public Guid? UserGuid { get; set; } = Guid.NewGuid();
+        public List<Address>? Addressess { get; set; }
 
     }
 }
