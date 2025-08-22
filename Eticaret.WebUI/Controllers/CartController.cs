@@ -10,11 +10,15 @@ namespace Eticaret.WebUI.Controllers
 {
     public class CartController : Controller
     {
-        private readonly IService<Product> _service;
+        private readonly IService<Product> _serviceProduct;
+        private readonly IService<Address> _serviceAddress;
+        private readonly IService<AppUser> _serviceAppUser;
 
-        public CartController(IService<Product> service)
+        public CartController(IService<Product> service, IService<Address> serviceAddress, IService<AppUser> serviceAppUser)
         {
-            _service = service;
+            _serviceProduct = service;
+            _serviceAddress = serviceAddress;
+            _serviceAppUser = serviceAppUser;
         }
         public IActionResult Index()
         {
@@ -32,7 +36,7 @@ namespace Eticaret.WebUI.Controllers
         }
         public IActionResult Add(int id,int quantity = 1)
         {
-            var product = _service.Find(id);
+            var product = _serviceProduct.Find(id);
             if (product != null)
             {
                 var cart = GetCart();
@@ -44,7 +48,7 @@ namespace Eticaret.WebUI.Controllers
         }
         public IActionResult Update(int id,int quantity = 1)
         {
-            var product = _service.Find(id);
+            var product = _serviceProduct.Find(id);
             if (product != null)
             {
                 var cart = GetCart();
@@ -55,7 +59,7 @@ namespace Eticaret.WebUI.Controllers
         }
         public IActionResult Remove(int ProductId)
         {
-            var product = _service.Find(ProductId);
+            var product = _serviceProduct.Find(ProductId);
             if (product != null)
             {
                 var cart = GetCart();
@@ -65,13 +69,20 @@ namespace Eticaret.WebUI.Controllers
             return RedirectToAction("Index");
         }
         [Authorize]
-        public IActionResult Checkout()
+        public  async Task<IActionResult> Checkout()
         {
             var cart = GetCart();
+            var appUser= await _serviceAppUser.GetAsync(x=>x.UserGuid.ToString() == HttpContext.User.FindFirst("UserGuid").Value);
+            if (appUser == null)
+            {
+                return RedirectToAction("SignIn","Account");
+            }
+            var addresses = await _serviceAddress.GetAllAsync(a=>a.AppUserId == appUser.Id && a.IsActive);
             var model = new CheckOutViewModel()
             {
                 CartProducts = cart.CartLines,
-                TotalPrice = cart.TotalPrice()
+                TotalPrice = cart.TotalPrice(),
+                Addresses = addresses  
             };
             return View(model);
         }

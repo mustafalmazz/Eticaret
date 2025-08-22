@@ -22,7 +22,7 @@ namespace Eticaret.WebUI.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> Index()
         {
             AppUser user = await _service.GetAsync(x=>x.UserGuid.ToString() == HttpContext.User.FindFirst("UserGuid").Value);
             if (user == null)
@@ -129,7 +129,7 @@ namespace Eticaret.WebUI.Controllers
             {
                 await _service.AddAsync(appUser);
                 await _service.SaveChangesAsync();
-                return RedirectToAction(nameof(IndexAsync));
+                return RedirectToAction(nameof(Index));
             }
             return View(appUser);
         }
