@@ -4,6 +4,7 @@ using Eticaret.WebUI.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Eticaret.WebUI.Controllers
@@ -16,9 +17,11 @@ namespace Eticaret.WebUI.Controllers
         //    _context = context;
         //}
         private readonly IService<AppUser> _service;
-        public AccountController(IService<AppUser> service)
+        private readonly IService<Order> _serviceOrder;
+        public AccountController(IService<AppUser> service, IService<Order> serviceOrder)
         {
             _service = service;
+            _serviceOrder = serviceOrder;
         }
 
         [Authorize]
@@ -73,6 +76,18 @@ namespace Eticaret.WebUI.Controllers
                     ModelState.AddModelError("","Hata Oluştu!");
                 }
             }
+            return View(model);
+        }
+        [Authorize]
+        public  async Task<IActionResult> MyOrders()
+        {
+            AppUser user = await _service.GetAsync(x=>x.UserGuid.ToString() == HttpContext.User.FindFirst("UserGuid").Value);
+            if (user is null)
+            {
+                await HttpContext.SignOutAsync();
+                return RedirectToAction("SignIn");
+            }
+            var model =  _serviceOrder.GetQueryable().Where(s => s.AppUserId == user.Id).Include(a=>a.OrderLines).ThenInclude(a=>a.Product);
             return View(model);
         }
         public IActionResult SignIn()
