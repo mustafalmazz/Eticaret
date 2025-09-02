@@ -16,17 +16,18 @@ namespace Eticaret.WebUI.Controllers
         {
             return View(await _service.GetAllAsync());
         }
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return NotFound("Geçersiz İstek!");
             }
 
-            var news = await _service.GetAsync(m => m.Id == id);
+            var news = await _service.GetAsync(m => m.Id == id && m.IsActive);
             if (news == null)
             {
-                return NotFound();
+                return NotFound("Geçerli Bir Kampanya Bulunamadı!");
             }
 
             return View(news);

@@ -28,10 +28,11 @@
             @Html.DisplayFor(model => model.AppUserId)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CustomerId)
+            @Html.DisplayNameFor(model => model.AppUser)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CustomerId)
+            @Html.DisplayFor(model => model.AppUser.Name)
+            @Html.DisplayFor(model => model.AppUser.SurName)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.BillingAddress)
@@ -50,6 +51,12 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.OrderDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.OrderState)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.OrderState)
         </dd>
     </dl>
     

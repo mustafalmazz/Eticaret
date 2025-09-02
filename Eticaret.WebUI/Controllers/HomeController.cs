@@ -26,7 +26,7 @@ namespace Eticaret.WebUI.Controllers
             var model = new HomePageViemModel()
             {
                 Sliders = await _serviceSlider.GetAllAsync(),
-                News = await _serviceNews.GetAllAsync(),
+                News = await _serviceNews.GetAllAsync(n=>n.IsActive),
                 Products = await _serviceProduct.GetAllAsync(p=>p.IsActive && p.IsHome)
             };
             return View(model);
