@@ -71,7 +71,7 @@
             </div>
         </div>
         <hr />
-        if (Model.Addresses is null)
+        if (Model.Addresses is null || Model.Addresses.Count == 0)
         {
             <div class="alert alert-secondary my-5">
                 <h5 class="text-danger">
@@ -126,6 +126,12 @@
                     <h3>Kart ile Öde</h3>
                     <h6>Banka veya Kredi Kartıyla Ödeme Yapabilirsiniz.</h6>
                     <h6>Kart Bilgileri</h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Kart Üzerindeki İsim</label>
+                            <input type="text" name="CardNameSurname" class="form-control" required />
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             <label>Kart Numarası</label>

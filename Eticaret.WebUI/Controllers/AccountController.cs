@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Security.Claims;
 
 namespace Eticaret.WebUI.Controllers
@@ -190,11 +191,45 @@ namespace Eticaret.WebUI.Controllers
             }
             return View();
         }
-        public IActionResult PasswordChange(string user)
+        public  async Task<IActionResult> PasswordChange(string user)
         {
             if(user == null)
             {
                 return  BadRequest("Geçersiz İstek!");
+            }
+            AppUser appuser = await _service.GetAsync(e=>e.UserGuid.ToString() == user);
+            if (appuser == null)
+            {
+                return NotFound("Geçersiz Değer!");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PasswordChange(string user, string Password)
+        {
+            if(user == null)
+            {
+                return  BadRequest("Geçersiz İstek!");
+            }
+            AppUser appuser = await _service.GetAsync(e=>e.UserGuid.ToString() == user);
+            if (appuser == null)
+            {
+                ModelState.AddModelError("","Geçersiz Değer!");
+                return View();
+            }
+            appuser.Password = Password;
+            var sonuc =  await _service.SaveChangesAsync();
+            if (sonuc>0)
+            {
+                TempData["Message"] = @"<div class=""alert alert-success alert-dismissible fade show"" role=""alert"">
+                        <strong>Şifreniz Başarıyla Güncellenmiştir! Giriş Ekranından Oturum Açabilirsiniz.</strong>
+    <button type=""button"" class=""btn-close"" data-bs-dismiss=""alert"" aria-label=""Close""></button>
+    </div>";
+            }
+            else
+            {
+                ModelState.AddModelError("","Güncelleme Başarısız!");
             }
             return View();
         }
