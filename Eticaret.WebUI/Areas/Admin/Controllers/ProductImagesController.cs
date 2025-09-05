@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Eticaret.Core.Entities;
 using Eticaret.Data;
+using Eticaret.WebUI.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Eticaret.WebUI.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"),Authorize(Policy ="AdminPolicy")]
     public class ProductImagesController : Controller
     {
         private readonly DatabaseContext _context;
@@ -21,9 +23,13 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
         }
 
         // GET: Admin/ProductImages
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? productId)
         {
             var databaseContext = _context.ProductImages.Include(p => p.Product);
+            if (productId.HasValue)
+            {
+                return View(await databaseContext.Where(x=>x.ProductId == productId).ToListAsync());
+            }
             return View(await databaseContext.ToListAsync());
         }
 
@@ -47,21 +53,20 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
         }
 
         // GET: Admin/ProductImages/Create
-        public IActionResult Create()
+        public IActionResult Create(string productId)
         {
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", productId);
             return View();
         }
 
         // POST: Admin/ProductImages/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Image,Alt,ProductId")] ProductImage productImage)
+        public async Task<IActionResult> Create(ProductImage productImage,IFormFile? Image)
         {
             if (ModelState.IsValid)
             {
+                productImage.Image = await FileHelper.FileLoaderAsync(Image,"/Img/Products/");
                 _context.Add(productImage);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -88,11 +93,9 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
         }
 
         // POST: Admin/ProductImages/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Image,Alt,ProductId")] ProductImage productImage)
+        public async Task<IActionResult> Edit(int id, ProductImage productImage,IFormFile? Image,bool cbResmiSil=false)
         {
             if (id != productImage.Id)
             {
@@ -103,6 +106,14 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             {
                 try
                 {
+                    if (cbResmiSil)
+                    {
+                        productImage.Image = string.Empty;
+                    }
+                    if (Image is not null)
+                    {
+                        productImage.Image = await FileHelper.FileLoaderAsync(Image,"/Img/Products/");
+                    }
                     _context.Update(productImage);
                     await _context.SaveChangesAsync();
                 }

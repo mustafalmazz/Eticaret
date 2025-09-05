@@ -11,9 +11,11 @@
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    #datatablesSimple tbody tr td:last-child{
+
+    #datatablesSimple tbody tr td:last-child, td:nth-child(2) {
         white-space: nowrap;
     }
+
 </style>
 <p>
     <a asp-action="Create" class="btn btn-outline-primary"><i class="fa-solid fa-plus"></i> Yeni Ekle</a>
@@ -23,9 +25,6 @@
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Image)
@@ -64,14 +63,14 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                    @item.CreateDate.ToShortDateString()
-            </td>
-            <td>
-                    <a href="/Img/Products/@item.Image">
-                        <img src="/Img/Products/@item.Image" alt="" height="30" />
+                    <a href="/Img/Products/@item.Image" class="btn btn-sm btn-default">
+                        <img src="/Img/Products/@item.Image" alt="" height="30"  />
                     </a>
-                    <a href="/Admin/ProductImages/Create?productId=@item.Id" title=" Yeni Resim Ekle" target="_blank" class="ms-2">
+                    <a href="/Admin/ProductImages/Create?productId=@item.Id" title=" Yeni Resim Ekle" target="_blank" class="btn btn-sm  btn-default">
                         <i class="fa-solid fa-plus"></i>
+                    </a>
+                    <a href="/Admin/ProductImages?productId=@item.Id" title=" Ürün Resimleri" target="_blank" class="btn btn-sm  btn-default">
+                        <i class="fa-solid fa-images"></i>
                     </a>
             </td>
             <td>
