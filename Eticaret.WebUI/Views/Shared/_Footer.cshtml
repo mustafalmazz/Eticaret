@@ -1,80 +1,362 @@
-﻿<section class="bg-light">
-    <div class="container">
-        <footer class="py-5">
-            <div class="row">
-                <div class="col-6 col-md-3 mb-3">
-                    <h5>Bize Ulaşın</h5>
-                    <div class="col-auto">
-                        <div>
-                            <h6>Adres</h6>
-                           Kadıköy / İstanbul
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footer Tasarımı - SendeAl.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --light-orange: #fff4f0;
+            --dark-orange: #e55a2b;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --white: #ffffff;
+            --border-light: #e9ecef;
+            --shadow: rgba(255, 107, 53, 0.15);
+        }
+
+        /* Ana Footer Tasarımı */
+        .bg-light {
+            background: linear-gradient(135deg, #f8f9fa 0%, var(--light-orange) 100%) !important;
+            position: relative;
+        }
+
+            .bg-light::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+            }
+
+        footer {
+            color: var(--text-dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+            /* Başlık Tasarımları */
+            footer h5 {
+                color: var(--text-dark);
+                font-weight: 700;
+                margin-bottom: 20px;
+                position: relative;
+                font-size: 1.1rem;
+            }
+
+                footer h5::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -8px;
+                    left: 0;
+                    width: 40px;
+                    height: 3px;
+                    background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+                    border-radius: 2px;
+                }
+
+            /* İletişim Bilgileri */
+            footer h6 {
+                color: var(--primary-orange);
+                font-weight: 600;
+                font-size: 0.9rem;
+                margin-bottom: 5px;
+                margin-top: 15px;
+            }
+
+                footer h6:first-child {
+                    margin-top: 0;
+                }
+
+        /* Nav Linkler */
+        .nav-link {
+            color: var(--text-light) !important;
+            padding: 8px 0 !important;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+            .nav-link:hover {
+                color: var(--primary-orange) !important;
+                padding-left: 10px !important;
+                transform: translateX(5px);
+            }
+
+            .nav-link::before {
+                content: '';
+                position: absolute;
+                left: -5px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 0;
+                height: 2px;
+                background: var(--primary-orange);
+                transition: width 0.3s ease;
+            }
+
+            .nav-link:hover::before {
+                width: 15px;
+            }
+
+        /* E-Bülten Formu */
+        .form-control {
+            border: 2px solid var(--border-light);
+            border-radius: 25px;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+            .form-control:focus {
+                border-color: var(--primary-orange);
+                box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+                outline: none;
+            }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange)) !important;
+            border: none !important;
+            border-radius: 25px !important;
+            padding: 12px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(45deg, var(--dark-orange), var(--primary-orange)) !important;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px var(--shadow);
+            }
+
+        /* E-Bülten Açıklaması */
+        footer p {
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        /* Alt Kısım (Copyright ve Sosyal Medya) */
+        .border-top {
+            border-color: var(--border-light) !important;
+            border-width: 2px !important;
+        }
+
+        /* Sosyal Medya İkonları */
+        .list-unstyled a {
+            color: var(--text-light) !important;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+            .list-unstyled a:hover {
+                color: white !important;
+                background: var(--primary-orange);
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px var(--shadow);
+            }
+
+        /* Responsive Tasarım */
+        @@media (max-width: 768px) {
+            footer h5
+
+        {
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .nav-link {
+            font-size: 0.85rem;
+        }
+
+        .d-flex.flex-column.flex-sm-row {
+            gap: 10px !important;
+        }
+
+        .btn-primary {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+        }
+
+        }
+
+        @@media (max-width: 576px) {
+            .py-5
+
+        {
+            padding: 2rem 0 !important;
+        }
+
+        footer h5 {
+            font-size: 0.95rem;
+        }
+
+        .nav-link {
+            font-size: 0.8rem;
+            padding: 6px 0 !important;
+        }
+
+        .list-unstyled a {
+            font-size: 1.2rem;
+            width: 35px;
+            height: 35px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        }
+
+        /* Animasyon Efektleri */
+        .row > div {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+            .row > div:nth-child(1) {
+                animation-delay: 0.1s;
+            }
+
+            .row > div:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .row > div:nth-child(3) {
+                animation-delay: 0.3s;
+            }
+
+            .row > div:nth-child(4) {
+                animation-delay: 0.4s;
+            }
+
+        @@keyframes fadeInUp {
+            to
+
+        {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* Hover Efekti için Ekstra */
+        .col-6, .col-md-2, .col-md-3, .col-md-4 {
+            transition: transform 0.3s ease;
+            padding: 20px 15px;
+            border-radius: 15px;
+        }
+
+            .col-6:hover, .col-md-2:hover, .col-md-3:hover, .col-md-4:hover {
+                transform: translateY(-5px);
+                background: rgba(255, 255, 255, 0.3);
+                backdrop-filter: blur(10px);
+            }
+    </style>
+</head>
+<body>
+    <!-- Sizin Orijinal Kodunuz - Sadece CSS Tasarımı Değişti -->
+    <section class="bg-light">
+        <div class="container">
+            <footer class="py-5">
+                <div class="row">
+                    <div class="col-6 col-md-3 mb-3">
+                        <h5>Bize Ulaşın</h5>
+                        <div class="col-auto">
+                            <div>
+                                <h6>Adres</h6>
+                                Kadıköy / İstanbul
+                            </div>
+                            <div>
+                                <h6>Email</h6>
+                                info@eticaretsitesi.com
+                            </div>
+                            <div>
+                                <h6>Telefon</h6>
+                                0221 221 21 21
+                            </div>
                         </div>
-                        <div>
-                            <h6>Email</h6>
-                            info@eticaretsitesi.com
-                        </div>
-                        <div>
-                            <h6>Telefon</h6>
-                            0221 221 21 21
-                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-2 mb-3">
+                        <h5>Çok Satan Markalar</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Monster</a></li>
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Asus</a></li>
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Acer</a></li>
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Excalibur</a></li>
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Samsung</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-6 col-md-3 mb-3">
+                        <h5>Çok Satan Kategoriler</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Dizüstü Bilgisayar</a></li>
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Masaüstü Bilgisayar</a></li>
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Tablet Bilgisayar</a></li>
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Monitörler</a></li>
+                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">TV & Görüntü & Ses Sistemleri</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <form>
+                            <h5>E Bültene Abone Olun</h5>
+                            <p>Kampanyalardan önce sizin haberiniz olsun.</p>
+                            <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+                                <label for="newsletter1" class="visually-hidden">Email</label>
+                                <input id="newsletter1" type="text" class="form-control" placeholder="Email">
+                                <button class="btn btn-primary text-nowrap" type="button">Abone Ol</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
-                <div class="col-6 col-md-2 mb-3">
-                    <h5>Çok Satan Markalar</h5>
-                    <ul class="nav flex-column">
-                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Monster</a></li>
-                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Asus</a></li>
-                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Acer</a></li>
-                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Excalibur</a></li>
-                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Samsung</a></li>
+                <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
+                    <p>© 2024 Eticaret, Ltd. Tüm hakları saklıdır.</p>
+                    <ul class="list-unstyled d-flex">
+                        <li class="ms-3">
+                            <a class="text-secondary" href="x.com/" target="_blank">
+                                <i class="bi bi-twitter-x"></i>
+                            </a>
+                        </li>
+                        <li class="ms-3">
+                            <a class="text-secondary" href="wwww.instagram.com/" target="_blank">
+                                <i class="bi bi-instagram"></i>
+                            </a>
+                        </li>
+                        <li class="ms-3">
+                            <a class="text-secondary" href="facebook.com/" target="_blank">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                        </li>
                     </ul>
                 </div>
+            </footer>
+        </div>
+    </section>
 
-                <div class="col-6 col-md-3 mb-3">
-                    <h5>Çok Satan Kategoriler</h5>
-                    <ul class="nav flex-column">
-                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Dizüstü Bilgisayar</a></li>
-                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Masaüstü Bilgisayar</a></li>
-                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Tablet Bilgisayar</a></li>
-                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">Monitörler</a></li>
-                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">TV & Görüntü & Ses Sistemleri</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-md-4 mb-3">
-                    <form>
-                        <h5>E Bültene Abone Olun</h5>
-                        <p>Kampanyalardan önce sizin haberiniz olsun.</p>
-                        <div class="d-flex flex-column flex-sm-row w-100 gap-2">
-                            <label for="newsletter1" class="visually-hidden">Email</label>
-                            <input id="newsletter1" type="text" class="form-control" placeholder="Email">
-                            <button class="btn btn-primary text-nowrap" type="button">Abone Ol</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
-                <p>© 2024 Eticaret, Ltd. Tüm hakları saklıdır.</p>
-                <ul class="list-unstyled d-flex">
-                    <li class="ms-3">
-                        <a class="text-secondary" href="x.com/" target="_blank">
-                            <i class="bi bi-twitter-x"></i>
-                        </a>
-                    </li>
-                    <li class="ms-3">
-                        <a class="text-secondary" href="wwww.instagram.com/" target="_blank">
-                            <i class="bi bi-instagram"></i>
-                        </a>
-                    </li>
-                    <li class="ms-3">
-                        <a class="text-secondary" href="facebook.com/" target="_blank">
-                            <i class="bi bi-facebook"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </footer>
-    </div>
-</section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,106 +1,473 @@
-﻿@using Eticaret.WebUI.ExtensionMethods
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SendeAl.com - Header Tasarım</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --light-orange: #fff4f0;
+            --dark-orange: #e55a2b;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --white: #ffffff;
+            --border-light: #e9ecef;
+        }
 
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        @* container yapılabilir *@
-        <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Eticaret.WebUI</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-            aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-evenly">
-                <form action="/Products" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                    <input name="q" type="search" class="form-control" placeholder="Ürün Ara..." aria-label="Search">
-                </form>
-                <ul class="navbar-nav mt-auto ">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Anasayfa</a>
-                    </li>
-                    @await Component.InvokeAsync("Categories")
+        .custom-header {
+            background: linear-gradient(135deg, var(--white) 0%, var(--light-orange) 100%);
+            border-bottom: 3px solid var(--primary-orange);
+            box-shadow: 0 2px 15px rgba(255, 107, 53, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+        }
 
-                </ul>
-                @if (Context.User.Identity.IsAuthenticated)
-                {
-                    <div class="dropdown">
-                        <a class="dropdown-toggle nav-link text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-fill"></i> Hesabım
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 500px;
+            margin: 0 20px;
+        }
+
+        .search-input {
+            border: 2px solid var(--border-light);
+            border-radius: 25px;
+            padding: 10px 50px 10px 20px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+            outline: none;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-orange);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: var(--dark-orange);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .nav-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-item-custom {
+            position: relative;
+            text-decoration: none;
+            color: var(--text-dark);
+            padding: 8px 12px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 70px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .nav-item-custom:hover {
+            background: var(--light-orange);
+            color: var(--primary-orange);
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+        .nav-item-custom .icon {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        .nav-item-custom .text {
+            font-size: 0.85rem;
+            font-weight: 500;
+            line-height: 1;
+        }
+
+        .dropdown-custom {
+            position: relative;
+        }
+
+        .dropdown-toggle-custom {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown-toggle-custom::after {
+            margin-left: 5px;
+            font-size: 0.7rem;
+        }
+
+        .dropdown-menu-custom {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            min-width: 200px;
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+        }
+
+        .dropdown-menu-custom.show {
+            display: block;
+        }
+
+        .dropdown-item-custom {
+            padding: 12px 20px;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .dropdown-item-custom:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item-custom:hover {
+            background: var(--light-orange);
+            color: var(--primary-orange);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--primary-orange);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .navbar-toggler {
+            border: 2px solid var(--primary-orange);
+            border-radius: 8px;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23ff6b35' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .mobile-nav {
+            display: none;
+        }
+
+        .mobile-menu {
+            background: white;
+            border-top: 1px solid var(--border-light);
+            padding: 15px 0;
+        }
+
+        .mobile-nav-item {
+            display: block;
+            padding: 10px 20px;
+            color: var(--text-dark);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border-light);
+            transition: all 0.2s ease;
+        }
+
+        .mobile-nav-item:hover {
+            background: var(--light-orange);
+            color: var(--primary-orange);
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 991px) {
+            .nav-section {
+                display: none;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .search-container {
+                margin: 10px 0;
+                max-width: 100%;
+            }
+
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+
+            .search-container {
+                margin: 8px 0;
+            }
+
+            .nav-item-custom .text {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Category dropdown için özel stiller */
+        .categories-dropdown .dropdown-menu-custom {
+            min-width: 250px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <header class="custom-header">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <!-- Logo -->
+                <a class="navbar-brand" href="/">SendeAl.com</a>
+
+                <!-- Mobile Toggle Button -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <!-- Search Bar -->
+                    <div class="search-container mx-auto">
+                        <form action="/Products" role="search">
+                            <div class="position-relative">
+                                <input name="q" type="search" class="form-control search-input" placeholder="Ürün Ara..." aria-label="Search">
+                                <button type="submit" class="search-btn">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Desktop Navigation -->
+                    <div class="nav-section d-none d-lg-flex">
+                        <!-- Home -->
+                        <a href="/" class="nav-item-custom">
+                            <span class="icon">
+                                <i class="bi bi-house-door"></i>
+                            </span>
+                            <span class="text">Anasayfa</span>
                         </a>
 
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/Account">Kullanıcı Bilgilerim</a></li>
-                            <li><a class="dropdown-item" href="/MyAddresses">Kayıtlı Adreslerim</a></li>
-                            <li><a class="dropdown-item" href="/Account/MyOrders">Siparişlerim</a></li>
-                            <li><a class="dropdown-item" href="/Account/">Değerlendirmelerim</a></li>
-                            <li class="text-center"><a class="btn btn-danger" href="/Account/SignOut">Oturumu Kapat</a></li>
-                        </ul>
-                    </div>
-                }
-                else
-                {
-                    <div class="dropdown">
-                        <a class="dropdown-toggle nav-link text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person"></i> Giriş Yap
-                        </a>
-
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/Account/SignIn">Giriş</a></li>
-                            <li><a class="dropdown-item" href="/Account/SignUp">Üye Ol</a></li>
-                        </ul>
-                    </div>
-                }
-                <div class="dropdown mx-3">
-                    <a class="nav-link text-dark" href="/Favorites">
-                        @{
-                            var favorites = Context.Session.GetJson<List<Product>>("GetFavorites");
-                            if (favorites is not null && favorites.Count>0)
-                            {
-                                <i class="bi bi-heart-fill"></i> @:Favorilerim (@favorites.Count)
-                            }
-                            else
-                            {
-                                <i class="bi bi-heart"></i> @:Favorilerim
-                            }
-                        }
-                       
-                    </a>
-                </div>
-                <div class="dropdown me-3">
-                    @{
-                        var cart = Context.Session.GetJson<Eticaret.Service.Concrete.CartService>("Cart");
-                        if (cart != null && cart.CartLines.Count > 0)
-                        {
-                            <a class="dropdown-toggle nav-link text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-cart-fill"></i> Sepetim
-                                <span class="badge bg-danger text-white ms-1 rounded-pill">
-                                    @cart.CartLines.Count
+                        <!-- Categories Dropdown -->
+                        <div class="dropdown-custom categories-dropdown">
+                            <a href="#" class="nav-item-custom dropdown-toggle-custom" data-bs-toggle="dropdown">
+                                <span class="icon">
+                                    <i class="bi bi-grid-3x3-gap"></i>
                                 </span>
+                                <span class="text">Kategoriler</span>
                             </a>
+                            <div class="dropdown-menu-custom">
+                                <a href="/category/electronics" class="dropdown-item-custom">
+                                    <i class="bi bi-laptop me-2"></i> Elektronik
+                                </a>
+                                <a href="/category/clothing" class="dropdown-item-custom">
+                                    <i class="bi bi-bag me-2"></i> Giyim
+                                </a>
+                                <a href="/category/books" class="dropdown-item-custom">
+                                    <i class="bi bi-book me-2"></i> Kitap
+                                </a>
+                                <a href="/category/sports" class="dropdown-item-custom">
+                                    <i class="bi bi-bicycle me-2"></i> Spor
+                                </a>
+                            </div>
+                        </div>
 
-                            <ul class="dropdown-menu">
-                                @foreach (var item in cart.CartLines)
-                                {
-                                    <li>
-                                        <a class="dropdown-item" href="/Products/Details/@item.Product.Id">
-                                            <img src="/Img/Products/@item.Product.Image" alt="" height="40" />
-                                            @item.Product.Name
-                                        </a>
-                                    </li>
-
-                                }
-                                <li class="text-center"><a class="btn btn-warning m-auto" href="/Cart">Sepete Git</a></li>
-                            </ul>
-                        }
-                        else
-                        {
-                            <a class="nav-link text-dark" href="/Cart">
-                                <i class="bi bi-cart"></i> Sepetim
+                        <!-- Account Dropdown -->
+                        <div class="dropdown-custom">
+                            <a href="#" class="nav-item-custom dropdown-toggle-custom" data-bs-toggle="dropdown">
+                                <span class="icon">
+                                    <i class="bi bi-person-fill"></i>
+                                </span>
+                                <span class="text">Hesabım</span>
                             </a>
-                        }
-                    }
+                            <div class="dropdown-menu-custom">
+                                <a href="/Account" class="dropdown-item-custom">
+                                    <i class="bi bi-person me-2"></i> Kullanıcı Bilgilerim
+                                </a>
+                                <a href="/MyAddresses" class="dropdown-item-custom">
+                                    <i class="bi bi-geo-alt me-2"></i> Kayıtlı Adreslerim
+                                </a>
+                                <a href="/Account/MyOrders" class="dropdown-item-custom">
+                                    <i class="bi bi-bag-check me-2"></i> Siparişlerim
+                                </a>
+                                <a href="/Account/" class="dropdown-item-custom">
+                                    <i class="bi bi-star me-2"></i> Değerlendirmelerim
+                                </a>
+                                <a href="/Account/SignOut" class="dropdown-item-custom text-danger">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Oturumu Kapat
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Favorites -->
+                        <a href="/Favorites" class="nav-item-custom position-relative">
+                            <span class="icon">
+                                <i class="bi bi-heart-fill"></i>
+                            </span>
+                            <span class="text">Favoriler</span>
+                            <span class="cart-badge">3</span>
+                        </a>
+
+                        <!-- Cart Dropdown -->
+                        <div class="dropdown-custom">
+                            <a href="#" class="nav-item-custom dropdown-toggle-custom position-relative" data-bs-toggle="dropdown">
+                                <span class="icon">
+                                    <i class="bi bi-cart-fill"></i>
+                                </span>
+                                <span class="text">Sepetim</span>
+                                <span class="cart-badge">2</span>
+                            </a>
+                            <div class="dropdown-menu-custom">
+                                <a href="/product/1" class="dropdown-item-custom">
+                                    <img src="https://via.placeholder.com/40x40/ff6b35/white?text=P1" alt="Product" class="me-2 rounded">
+                                    Örnek Ürün 1
+                                </a>
+                                <a href="/product/2" class="dropdown-item-custom">
+                                    <img src="https://via.placeholder.com/40x40/ff6b35/white?text=P2" alt="Product" class="me-2 rounded">
+                                    Örnek Ürün 2
+                                </a>
+                                <div class="text-center p-3">
+                                    <a href="/Cart" class="btn btn-warning rounded-pill px-4">
+                                        <i class="bi bi-cart-check me-1"></i>
+                                        Sepete Git
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact -->
+                        <a href="/Contact" class="nav-item-custom">
+                            <span class="icon">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <span class="text">İletişim</span>
+                        </a>
+                    </div>
+
+                    <!-- Mobile Navigation -->
+                    <div class="mobile-menu d-lg-none">
+                        <a href="/" class="mobile-nav-item">
+                            <i class="bi bi-house-door me-2"></i> Anasayfa
+                        </a>
+                        <a href="/categories" class="mobile-nav-item">
+                            <i class="bi bi-grid-3x3-gap me-2"></i> Kategoriler
+                        </a>
+                        <a href="/Account" class="mobile-nav-item">
+                            <i class="bi bi-person-fill me-2"></i> Hesabım
+                        </a>
+                        <a href="/Favorites" class="mobile-nav-item">
+                            <i class="bi bi-heart me-2"></i> Favorilerim (3)
+                        </a>
+                        <a href="/Cart" class="mobile-nav-item">
+                            <i class="bi bi-cart me-2"></i> Sepetim (2)
+                        </a>
+                        <a href="/Contact" class="mobile-nav-item">
+                            <i class="bi bi-envelope me-2"></i> İletişim
+                        </a>
+                    </div>
                 </div>
-                <a class="nav-link text-dark" asp-controller="Home" asp-action="ContactUs">İletişim</a>
             </div>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Custom dropdown functionality
+        document.querySelectorAll('.dropdown-toggle-custom').forEach(function(toggle) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                const menu = this.nextElementSibling;
+
+                // Close all other dropdowns
+                document.querySelectorAll('.dropdown-menu-custom').forEach(function(otherMenu) {
+                    if (otherMenu !== menu) {
+                        otherMenu.classList.remove('show');
+                    }
+                });
+
+                // Toggle current dropdown
+                menu.classList.toggle('show');
+            });
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-custom')) {
+                document.querySelectorAll('.dropdown-menu-custom').forEach(function(menu) {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+
+        // Mobile menu toggle
+        document.querySelector('.navbar-toggler').addEventListener('click', function() {
+            const mobileMenu = document.querySelector('.mobile-menu');
+            if (mobileMenu.style.display === 'block') {
+                mobileMenu.style.display = 'none';
+            } else {
+                mobileMenu.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
+<br />
+<br />

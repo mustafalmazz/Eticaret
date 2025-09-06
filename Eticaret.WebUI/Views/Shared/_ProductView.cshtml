@@ -1,41 +1,327 @@
-﻿@model Product
-<div class="col mb-5">
-    <div class="card h-100">
-        <!-- Sale badge-->
-        <div class="badge position-absolute" style="top: 0.5rem; right: 0.5rem">
-            <form asp-action="Add" asp-controller="Favorites">
-                <input type="hidden" value="@Model.Id" name="ProductId" />
-                <button class="btn btn-transparent" type="submit" style="box-shadow : none">
-                    <i class="bi bi-heart"></i>
-                </button>
-            </form>
-        </div>
-        <!-- Product image-->
-        <a href="/Products/Details/@Model.Id">
-            <img class="card-img-top" src="/Img/Products/@Model.Image" alt="@Model.Name">
-        </a>
-        <!-- Product details-->
-        <div class="card-body p-4">
-            <div class="text-center">
-                <!-- Product name-->
-                <h5 class="fw-bolder">@Model.Name</h5>
-                <!-- Product price-->
-                <span class="text-danger text-decoration-line-through">
-                    @((Model.Price * 12 / 10).ToString("c"))
-                </span><br />
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün Kartı Tasarımı</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --light-orange: #fff4f0;
+            --dark-orange: #e55a2b;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --white: #ffffff;
+            --border-light: #e9ecef;
+            --shadow: rgba(255, 107, 53, 0.15);
+        }
 
-                @Model.Price.ToString("c")
+        /* Ürün Kartı Ana Tasarım */
+        .card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            background: white;
+            position: relative;
+        }
+
+            .card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 15px 40px var(--shadow);
+            }
+
+            .card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .card:hover::before {
+                opacity: 1;
+            }
+
+        /* Favori Badge Tasarımı */
+        .badge {
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            top: 15px !important;
+            right: 15px !important;
+            z-index: 10 !important;
+            pointer-events: auto !important;
+        }
+
+            .badge:hover {
+                background: var(--light-orange) !important;
+                border-color: var(--primary-orange);
+                transform: scale(1.1);
+            }
+
+            .badge form {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 !important;
+            }
+
+        .btn-transparent {
+            background: transparent !important;
+            border: none !important;
+            color: var(--text-light) !important;
+            font-size: 1.3rem !important;
+            transition: all 0.3s ease;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            outline: none !important;
+        }
+
+            .btn-transparent:hover {
+                color: var(--primary-orange) !important;
+                background: transparent !important;
+                border: none !important;
+                transform: none !important;
+            }
+
+            .btn-transparent:focus {
+                color: var(--primary-orange) !important;
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                outline: none !important;
+            }
+
+            .btn-transparent:active {
+                color: var(--primary-orange) !important;
+                background: transparent !important;
+                border: none !important;
+                transform: none !important;
+            }
+
+        /* Ürün Resmi */
+        .card-img-top {
+            height: 280px;
+            object-fit: cover;
+            transition: all 0.4s ease;
+        }
+
+        .card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        /* Kart Gövdesi */
+        .card-body {
+            padding: 25px 20px 20px;
+            text-align: center;
+        }
+
+        .fw-bolder {
+            font-weight: 700 !important;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            line-height: 1.4;
+            height: 2.8em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        /* Fiyat Tasarımı */
+        .text-danger {
+            color: var(--text-light) !important;
+            text-decoration: line-through;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .card-body span:not(.text-danger) {
+            color: var(--primary-orange) !important;
+            font-size: 1.4rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        /* Kart Alt Kısmı */
+        .card-footer {
+            padding: 0 20px 25px !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        /* Sepete Ekle Butonu */
+        .btn-outline-dark {
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange)) !important;
+            border: none !important;
+            color: white !important;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-outline-dark::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .btn-outline-dark:hover::before {
+                left: 100%;
+            }
+
+            .btn-outline-dark:hover {
+                background: linear-gradient(45deg, var(--dark-orange), var(--primary-orange)) !important;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px var(--shadow);
+                color: white !important;
+            }
+
+            .btn-outline-dark:active {
+                transform: translateY(0);
+            }
+
+        .bi-cart-fill {
+            margin-right: 8px;
+            font-size: 1rem;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .card-img-top
+
+        {
+            height: 220px;
+        }
+
+        .fw-bolder {
+            font-size: 1rem;
+        }
+
+        .card-body span:not(.text-danger) {
+            font-size: 1.2rem !important;
+        }
+
+        .btn-outline-dark {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        }
+
+        /* Animasyon Efekti */
+        @@keyframes addedToCart {
+            0%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(0.95);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+
+        }
+
+        .btn-outline-dark.added {
+            animation: addedToCart 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-light p-4">
+    <!-- Sizin Orijinal Kodunuz - Sadece Tasarım Değişti -->
+    @model Product
+    <div class="col mb-5">
+        <div class="card h-100">
+            <!-- Sale badge-->
+            <div class="badge position-absolute" style="top: 0.5rem; right: 0.5rem">
+                <form asp-action="Add" asp-controller="Favorites">
+                    <input type="hidden" value="@Model.Id" name="ProductId" />
+                    <button class="btn btn-transparent" type="submit" style="box-shadow : none">
+                        <i class="bi bi-heart"></i>
+                    </button>
+                </form>
+            </div>
+            <!-- Product image-->
+            <a href="/Products/Details/@Model.Id">
+                <img class="card-img-top" src="/Img/Products/@Model.Image" alt="@Model.Name">
+            </a>
+            <!-- Product details-->
+            <div class="card-body p-4">
+                <div class="text-center">
+                    <!-- Product name-->
+                    <h5 class="fw-bolder">@Model.Name</h5>
+                    <!-- Product price-->
+                    <span class="text-danger text-decoration-line-through">
+                        @((Model.Price * 12 / 10).ToString("c"))
+                    </span><br />
+                    @Model.Price.ToString("c")
+                </div>
+            </div>
+            <!-- Product actions-->
+            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                <form action="/Cart/Add" method="post">
+                    <input type="hidden" value="@Model.Id" name="id" />
+                    <div class="text-center">
+                        <button class="btn btn-outline-dark mt-auto" type="submit">
+                            <i class="bi-cart-fill me-1"></i>Sepete Ekle
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-        <!-- Product actions-->
-        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-            <form action="/Cart/Add" method="post">
-                <input type="hidden" value="@Model.Id" name="id" />
-                <div class="text-center">
-                   
-                    <button class="btn btn-outline-dark mt-auto" type="submit"> <i class="bi-cart-fill me-1"></i>Sepete Ekle</button>
-                </div>
-            </form>
-        </div>
     </div>
-</div>
+
+    <script>
+        // Sepete ekle butonu animasyonu
+        document.querySelectorAll('.btn-outline-dark').forEach(button => {
+            button.addEventListener('click', function(e) {
+                this.classList.add('added');
+                setTimeout(() => {
+                    this.classList.remove('added');
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
