@@ -436,8 +436,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th style="color:white; text-align:start">Sipariş Toplamı</th>
-                                <td style="text-align:center; padding-left:10px;">
+                                <th style="color:white; text-align:center;">Sipariş Toplamı</th>
+                                <td style="text-align:center;">
                                     @(Model.TotalPrice > 999 ? Model.TotalPrice.ToString("c") : (Model.CartLines.Any() ? Model.TotalPrice + 99 : Model.TotalPrice.ToString("c")))
                                 </td>
                             </tr>

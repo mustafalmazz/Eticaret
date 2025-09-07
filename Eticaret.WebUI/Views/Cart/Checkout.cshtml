@@ -3,192 +3,751 @@
     ViewData["Title"] = "Satın Al";
 }
 
-<section class="container my-5">
-    <div class="text-center">
-        <h1 class="display-4">Satın Al</h1>
-    </div>
 
-    @if (Model.CartProducts.Any())
-    {
-        <div class="row">
-            <div class="col-md-8">
-                <div class="table-responsive">
-
-                    <table class="table table-striped table-hover">
-                        <tr>
-                            <th></th>
-                            <th>Ürün</th>
-                            <th>Fiyat</th>
-                            <th>Miktar</th>
-                            <th>Toplam</th>
-                        </tr>
-                        <tbody>
-                            @foreach (var item in Model.CartProducts)
-                            {
-                                <tr>
-                                    <td><img src="/Img/Products/@item.Product.Image" alt="" height="37" /></td>
-                                    <td>
-                                        <a class="nav-link text-dark" href="/Products/Details/@item.Product.Id">
-                                            @item.Product.Name
-                                        </a>
-                                    </td>
-                                    <td>@item.Product.Price.ToString("c")</td>
-                                    <td>
-                                        @item.Quantity
-                                    </td>
-                                    <td>@((item.Quantity * item.Product.Price).ToString("c"))</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div>
-                    <h4>
-                        Sipariş Özeti
-                    </h4>
-                </div>
-                <table class="table">
-                    <tr>
-                        <td>Ürün Toplamı</td>
-                        <td>@Model.TotalPrice.ToString("c")</td>
-                    </tr>
-                    <tr>
-                        <td>Kargo</td>
-                        <td>
-                            @(Model.TotalPrice > 999 ? "Ücretsiz" : Model.CartProducts.Any() ? "₺99" : "₺0")
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Sipariş Toplamı</th>
-                        <td>
-                            @(Model.TotalPrice > 999 ? Model.TotalPrice.ToString("c") : (Model.CartProducts.Any() ? Model.TotalPrice + 99 : Model.TotalPrice.ToString("c")))
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <hr />
-        if (Model.Addresses is null || Model.Addresses.Count == 0)
-        {
-            <div class="alert alert-secondary my-5">
-                <h5 class="text-danger">
-                    Kayıtlı Adresiniz Yok!
-                </h5>
-                <h6>
-                    Sipariş verebilmek için en az 1 adres eklemelisiniz!
-                </h6>
-                <a href="/MyAddresses/Create" class="btn btn-danger">
-                    <i class="bi-person-plus me-1"></i>
-                    Adres Ekle
-                </a>
-            </div>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satın Al - SendeAl.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --light-orange: #fff4f0;
+            --dark-orange: #e55a2b;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --white: #ffffff;
+            --border-light: #e9ecef;
+            --shadow: rgba(255, 107, 53, 0.15);
+            --success-green: #28a745;
+            --danger-red: #dc3545;
         }
-        else
-        {
-            <form asp-action="Checkout">
-                <div class="my-5">
-                    <h3>Teslimat Adresi</h3>
-                    <div class="row row-cols-3">
-                        @foreach (var item in Model.Addresses)
-                        {
-                            <div class="col">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="radio" name="DeliveryAddress" value="@item.AddressGuid" @(item.IsDeliveryAddress ? "checked" : "") />
-                                                @item.Title
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>
-                                            @item.OpenAddress @item.District @item.City
-                                        </p>
 
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="radio" name="BillingAddress" value="@item.AddressGuid" @(item.IsBillingAddress ? "checked" : "")/>
-                                                Fatura Adresi
-                                            </label>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, var(--light-orange) 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Başlık Tasarımı */
+        .display-4 {
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+            .display-4::after {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 4px;
+                background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+                border-radius: 2px;
+            }
+
+        /* Kart Tasarımı */
+        .checkout-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-light);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+            .checkout-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            }
+
+            .checkout-card h4,
+            .checkout-card h3 {
+                color: var(--text-dark);
+                font-weight: 700;
+                margin-bottom: 25px;
+                position: relative;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+                .checkout-card h4::after,
+                .checkout-card h3::after {
+                    content: '';
+                    flex: 1;
+                    height: 2px;
+                    background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+                    border-radius: 1px;
+                }
+
+        /* Tablo Tasarımı */
+        .table-responsive {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+            .table th {
+                background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+                color: white;
+                font-weight: 600;
+                border: none;
+                padding: 20px 15px;
+                font-size: 0.95rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .table td {
+                padding: 20px 15px;
+                vertical-align: middle;
+                border-bottom: 1px solid var(--border-light);
+                transition: all 0.3s ease;
+            }
+
+            .table tr:hover td {
+                background: var(--light-orange);
+            }
+
+            .table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .table td img {
+                border-radius: 8px;
+                transition: all 0.3s ease;
+                object-fit: cover;
+                width: 50px;
+                height: 50px;
+            }
+
+            .table tr:hover td img {
+                transform: scale(1.1);
+            }
+
+        .nav-link {
+            color: var(--text-dark) !important;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+            .nav-link:hover {
+                color: var(--primary-orange) !important;
+                text-decoration: underline;
+            }
+
+        .table td:nth-child(3),
+        .table td:nth-child(5) {
+            color: var(--primary-orange);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* Sipariş Özeti */
+        .order-summary {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-light);
+            position: sticky;
+            top: 20px;
+        }
+
+            .order-summary h4 {
+                color: var(--text-dark);
+                font-weight: 700;
+                margin-bottom: 20px;
+                text-align: center;
+                position: relative;
+            }
+
+                .order-summary h4::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -10px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 60px;
+                    height: 3px;
+                    background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+                    border-radius: 2px;
+                }
+
+            .order-summary .table td,
+            .order-summary .table th {
+                border-bottom: 1px solid var(--border-light);
+                padding: 15px 0;
+            }
+
+            .order-summary .table tr:last-child th,
+            .order-summary .table tr:last-child td {
+                border-bottom: 2px solid var(--primary-orange);
+                font-weight: 700;
+                color: var(--primary-orange);
+                font-size: 1.1rem;
+            }
+
+        /* Adres Kartları */
+        .address-card {
+            border: 2px solid var(--border-light);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+            .address-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .address-card.selected {
+                border-color: var(--primary-orange);
+                background: var(--light-orange);
+            }
+
+            .address-card .card-header {
+                background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+                color: white;
+                font-weight: 600;
+                padding: 15px 20px;
+            }
+
+            .address-card.selected .card-header {
+                background: linear-gradient(135deg, var(--dark-orange), var(--primary-orange));
+            }
+
+            .address-card .card-body {
+                padding: 20px;
+            }
+
+        .form-check-input:checked {
+            background-color: var(--primary-orange);
+            border-color: var(--primary-orange);
+        }
+
+        .form-check-input:focus {
+            border-color: var(--secondary-orange);
+            box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.25);
+        }
+
+        /* Form Elemanları */
+        .form-control,
+        .form-select {
+            border: 2px solid var(--border-light);
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+            height: 50px;
+        }
+
+        .form-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5L8 11L14 5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+        }
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--primary-orange);
+                box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.15);
+            }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        /* Butonlar */
+        .btn-success {
+            background: linear-gradient(45deg, var(--success-green), #20c997) !important;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-success::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .btn-success:hover::before {
+                left: 100%;
+            }
+
+            .btn-success:hover {
+                background: linear-gradient(45deg, #20c997, #17a2b8) !important;
+                transform: translateY(-3px);
+                box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+            }
+
+        .btn-danger {
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange)) !important;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .btn-danger:hover {
+                background: linear-gradient(45deg, var(--dark-orange), var(--primary-orange)) !important;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px var(--shadow);
+            }
+
+        /* Alert Tasarımı */
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid var(--secondary-orange);
+            border-radius: 15px;
+            color: var(--text-dark);
+            text-align: center;
+            padding: 30px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+            .alert-warning::before {
+                content: '🛒';
+                font-size: 3rem;
+                display: block;
+                margin-bottom: 20px;
+            }
+
+            .alert-warning h3 {
+                margin-bottom: 15px;
+                color: var(--dark-orange);
+                font-weight: 600;
+            }
+
+        .alert-secondary {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px solid var(--danger-red);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+            .alert-secondary::before {
+                content: '📍';
+                font-size: 2.5rem;
+                display: block;
+                margin-bottom: 15px;
+            }
+
+            .alert-secondary h5 {
+                color: var(--danger-red);
+                font-weight: 700;
+                margin-bottom: 15px;
+            }
+
+        /* Ödeme Sonuçları İçin Alert'ler */
+        .alert-payment-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .alert-payment-success .alert-heading {
+                color: #155724;
+                font-weight: 700;
+            }
+
+        .alert-payment-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .alert-payment-danger .alert-heading {
+                color: #721c24;
+                font-weight: 700;
+            }
+
+        /* Kart Bilgileri Bölümü */
+        .card-info-section {
+            background: linear-gradient(135deg, #f8f9fa, var(--light-orange));
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid var(--border-light);
+        }
+
+            .card-info-section h3,
+            .card-info-section h6 {
+                color: var(--text-dark);
+                margin-bottom: 15px;
+            }
+
+            .card-info-section h6 {
+                color: var(--text-light);
+                font-weight: 500;
+            }
+
+        /* Responsive Tasarım */
+        @@media (max-width: 768px) {
+            .checkout-card {
+                padding: 20px;
+            }
+
+            .table th,
+            .table td {
+                padding: 12px 8px;
+                font-size: 0.9rem;
+            }
+
+                .table td img {
+                    width: 40px;
+                    height: 40px;
+                }
+
+            .display-4 {
+                font-size: 2rem;
+            }
+
+            .order-summary {
+                position: static;
+                margin-top: 30px;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .checkout-card {
+                padding: 15px;
+                border-radius: 15px;
+            }
+
+            .table th,
+            .table td {
+                padding: 10px 6px;
+                font-size: 0.85rem;
+            }
+
+            .btn-success {
+                width: 100%;
+                margin-top: 20px;
+            }
+        }
+
+        /* Animasyon Efektleri */
+        .checkout-card {
+            animation: slideInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @@keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .checkout-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .checkout-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .checkout-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .checkout-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+    </style>
+</head>
+<body>
+    <section class="container my-5">
+        <div class="text-center">
+            <h1 class="display-4">Satın Al</h1>
+        </div>
+
+        @if (Model.CartProducts.Any())
+        {
+            @if (ViewData["PaymentResult"] != null)
+            {
+                <div class="checkout-card">
+                    @if ((bool)ViewData["PaymentResult"])
+                    {
+                        <div class="alert alert-payment-success" role="alert">
+                            <h4 class="alert-heading">✅ Ödeme Başarılı!</h4>
+                            <p>Siparişiniz başarıyla alındı ve hazırlanmaya başlandı. En kısa sürede kargoya verilecektir.</p>
+                            <hr>
+                            <p class="mb-0">Desteğiniz için teşekkür ederiz.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-payment-danger" role="alert">
+                            <h4 class="alert-heading">❌ Ödeme Başarısız!</h4>
+                            <p>Ödeme işlemi tamamlanamadı. Lütfen kart bilgilerinizi kontrol edip tekrar deneyiniz.</p>
+                            <hr>
+                            <p class="mb-0">Sorun devam ederse, bankanızla iletişime geçebilirsiniz.</p>
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="checkout-card">
+                        <h3>Sepetim</h3>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Resim</th>
+                                        <th>Ürün</th>
+                                        <th>Fiyat</th>
+                                        <th>Miktar</th>
+                                        <th>Toplam</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.CartProducts)
+                                    {
+                                        <tr>
+                                            <td><img src="/Img/Products/@item.Product.Image" alt="@item.Product.Name" /></td>
+                                            <td>
+                                                <a class="nav-link text-dark" href="/Products/Details/@item.Product.Id">
+                                                    @item.Product.Name
+                                                </a>
+                                            </td>
+                                            <td>@item.Product.Price.ToString("c")</td>
+                                            <td>@item.Quantity</td>
+                                            <td>@((item.Quantity * item.Product.Price).ToString("c"))</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="order-summary">
+                        <h4>Sipariş Özeti</h4>
+                        <table class="table">
+                            <tr>
+                                <td>Ürün Toplamı</td>
+                                <td>@Model.TotalPrice.ToString("c")</td>
+                            </tr>
+                            <tr>
+                                <td>Kargo</td>
+                                <td>@(Model.TotalPrice > 999 ? "Ücretsiz" : Model.CartProducts.Any() ? "99₺" : "0₺")</td>
+                            </tr>
+                            <tr class="table-primary">
+                                <th style="color:white; text-align:center;">Sipariş Toplamı</th>
+                                <td style="text-align:center;">
+                                    @(Model.TotalPrice > 999 ? Model.TotalPrice.ToString("c") : (Model.CartProducts.Any() ? (Model.TotalPrice + 99).ToString("c") : Model.TotalPrice.ToString("c")))
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+            @if (Model.Addresses is null || Model.Addresses.Count == 0)
+            {
+                <div class="checkout-card">
+                    <div class="alert alert-secondary my-5">
+                        <h5 class="text-danger">Kayıtlı Adresiniz Yok!</h5>
+                        <h6>Sipariş verebilmek için en az 1 adres eklemelisiniz!</h6>
+                        <a href="/MyAddresses/Create" class="btn btn-danger">
+                            <i class="bi bi-person-plus me-1"></i>
+                            Adres Ekle
+                        </a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <form asp-action="Checkout">
+                    <div class="checkout-card">
+                        <h3><i class="bi bi-truck me-2"></i>Teslimat Adresi</h3>
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+                            @foreach (var item in Model.Addresses)
+                            {
+                                <div class="col mb-3">
+                                    <div class="address-card" onclick="selectAddress(this, '@item.AddressGuid')">
+                                        <div class="card-header">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="DeliveryAddress" value="@item.AddressGuid" id="delivery_@item.AddressGuid" @(item.IsDeliveryAddress ? "checked" : "") />
+                                                <label class="form-check-label text-white fw-bold" for="delivery_@item.AddressGuid">
+                                                    @item.Title
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="mb-3">
+                                                <i class="bi bi-geo-alt me-2 text-muted"></i>
+                                                @item.OpenAddress @item.District @item.City
+                                            </p>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="BillingAddress" value="@item.AddressGuid" id="billing_@item.AddressGuid" @(item.IsBillingAddress ? "checked" : "") />
+                                                <label class="form-check-label" for="billing_@item.AddressGuid">
+                                                    <i class="bi bi-receipt me-1"></i>
+                                                    Fatura Adresi
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div class="my-5">
-                    <h2>Ödeme Seçenekleri</h2>
-                    <h3>Kart ile Öde</h3>
-                    <h6>Banka veya Kredi Kartıyla Ödeme Yapabilirsiniz.</h6>
-                    <h6>Kart Bilgileri</h6>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Kart Üzerindeki İsim</label>
-                            <input type="text" name="CardNameSurname" class="form-control" required />
+                            }
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Kart Numarası</label>
-                            <input type="number" name="CardNumber" class="form-control" required />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label>Son Kullanma Tarihi</label>
-                        <div class="col-md-2">
-                            <select class="form-select" name="CardMonth" required>
-                                <option disabled value="">Ay</option>
-                                <option  value="1">01</option>
-                                <option  value="2">02</option>
-                                <option  value="3">03</option>
-                                <option  value="4">04</option>
-                                <option  value="5">05</option> 
-                                <option  value="6">06</option>
-                                <option  value="7">07</option>
-                                <option  value="8">08</option>
-                                <option  value="9">09</option>
-                                <option  value="10">10</option>
-                                <option  value="11">11</option>
-                                <option  value="12">12</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-select" name="CardYear" required>
-                                <option disabled value="">Yıl</option>
-                                <option value="2025">2025</option>
-                                <option value="2026">2026</option>
-                                <option value="2027">2027</option>
-                                <option value="2028">2028</option>
-                                <option value="2029">2029</option>
-                                <option value="2030">2030</option>
-                                <option value="2031">2031</option>
-                                <option value="2032">2032</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label>CVV</label>
-                            <input type="number" name="CVV" class="form-control" required />
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-success mt-2">Ödeme Yap</button>
-                </div>
-            </form>
-        }
-    }
-    else
-    {
-        <div class="container">
-            <div class="alert alert-warning my-5">
-                <h3>Sepetinizde Ürün Bulunmamaktadır! </h3>
-            </div>
-        </div>
-    }
 
-</section>
+                    <div class="checkout-card">
+                        <h3><i class="bi bi-credit-card-fill me-2"></i>Ödeme Bilgileri</h3>
+                        <h6>Banka veya Kredi Kartıyla Ödeme Yapabilirsiniz.</h6>
+
+                        <div class="card-info-section">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">Kart Üzerindeki İsim</label>
+                                    <input type="text" name="CardNameSurname" class="form-control" placeholder="Ad Soyad" required />
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label">Kart Numarası</label>
+                                    <input type="text" name="CardNumber" class="form-control" placeholder="XXXX XXXX XXXX XXXX" required />
+                                </div>
+
+                                <div class="col-md-9">
+                                    <label class="form-label">Son Kullanma Tarihi</label>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <select class="form-select" name="CardMonth" required>
+                                                <option disabled selected value="">Ay</option>
+                                                @for (int i = 1; i <= 12; i++)
+                                                {
+                                                    <option value="@i">@i.ToString("00")</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <select class="form-select" name="CardYear" required>
+                                                <option disabled selected value="">Yıl</option>
+                                                @for (int i = DateTime.Now.Year; i <= DateTime.Now.Year + 10; i++)
+                                                {
+                                                    <option value="@i">@i</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">CVV</label>
+                                    <input type="text" name="CVV" class="form-control" placeholder="123" maxlength="4" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Siparişi Tamamla
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            }
+        }
+        else
+        {
+            <div class="container">
+                <div class="alert alert-warning my-5">
+                    <h3>Sepetinizde Ürün Bulunmamaktadır!</h3>
+                    <p class="mb-3">Beğendiğiniz ürünleri sepetinize ekleyerek sipariş verebilirsiniz.</p>
+                    <a href="/" class="btn btn-danger">
+                        <i class="bi bi-shop me-2"></i>
+                        Alışverişe Başla
+                    </a>
+                </div>
+            </div>
+        }
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Adres seçimi
+        function selectAddress(card, addressGuid) {
+            document.querySelectorAll('.address-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+
+            const deliveryRadio = document.getElementById('delivery_' + addressGuid);
+            if (deliveryRadio) {
+                deliveryRadio.checked = true;
+            }
+        }
+
+        // Form gönderme animasyonu
+        document.querySelector('form')?.addEventListener('submit', function (e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> İşleniyor...';
+                submitBtn.disabled = true;
+            }
+        });
+
+        // Sayfa yüklendiğinde seçili adresi işaretle
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('input[name="DeliveryAddress"]:checked').forEach(function (radio) {
+                const card = radio.closest('.address-card');
+                if (card) {
+                    card.classList.add('selected');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

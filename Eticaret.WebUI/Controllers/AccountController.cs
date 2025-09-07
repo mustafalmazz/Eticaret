@@ -138,7 +138,7 @@ namespace Eticaret.WebUI.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> SignUpAsync(AppUser appUser)
+        public async Task<IActionResult> SignUp(AppUser appUser)
         {
             appUser.IsAdmin = false;
             appUser.IsActive = true;
@@ -233,5 +233,10 @@ namespace Eticaret.WebUI.Controllers
             }
             return View();
         }
+        public IActionResult Contact()
+        {
+            return View();
+        }
+       
     }
 }

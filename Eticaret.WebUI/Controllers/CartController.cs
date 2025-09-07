@@ -97,6 +97,7 @@ namespace Eticaret.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Checkout(string CardNumber, string CardNameSurname, string CardMonth, string CardYear, string CVV, string DeliveryAddress, string BillingAddress)
         {
+
             var cart = GetCart();
             var appUser = await _serviceAppUser.GetAsync(x => x.UserGuid.ToString() == HttpContext.User.FindFirst("UserGuid").Value);
             if (appUser == null)
@@ -238,9 +239,10 @@ namespace Eticaret.WebUI.Controllers
             #endregion
             try
             {
+                // Ödeme sonucu kontrolü
                 if (payment.Status == "success")
                 {
-                    // sipariş oluştur
+                    // İşlem başarılı, sipariş oluşturulabilir.
                     await _serviceOrder.AddAsync(siparis);
                     var sonuc = await _serviceOrder.SaveChangesAsync();
                     if (sonuc > 0)
@@ -251,8 +253,11 @@ namespace Eticaret.WebUI.Controllers
                 }
                 else
                 {
-                    TempData["Message"] = $"<div class='alert alert-danger'> Ödeme İşlemi Başarısız! </div>({payment.ErrorMessage})";
+                    // Eğer ödeme başarısızsa, hata mesajını TempData'ya aktar
+                    TempData["Message"] = $"<div class='alert alert-danger'> Ödeme İşlemi Başarısız! </div>({payment.ErrorMessage ?? "Bilinmeyen hata."})";
+                    return RedirectToAction("Checkout");
                 }
+
 
             }
             catch (Exception)
