@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Eticaret.WebUI.ExtensionMethods
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -38,10 +39,10 @@
             transition: all 0.3s ease;
         }
 
-        .navbar-brand:hover {
-            transform: scale(1.05);
-            filter: brightness(1.1);
-        }
+            .navbar-brand:hover {
+                transform: scale(1.05);
+                filter: brightness(1.1);
+            }
 
         .search-container {
             position: relative;
@@ -58,11 +59,11 @@
             font-size: 14px;
         }
 
-        .search-input:focus {
-            border-color: var(--primary-orange);
-            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
-            outline: none;
-        }
+            .search-input:focus {
+                border-color: var(--primary-orange);
+                box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+                outline: none;
+            }
 
         .search-btn {
             position: absolute;
@@ -78,10 +79,10 @@
             transition: all 0.3s ease;
         }
 
-        .search-btn:hover {
-            background: var(--dark-orange);
-            transform: translateY(-50%) scale(1.1);
-        }
+            .search-btn:hover {
+                background: var(--dark-orange);
+                transform: translateY(-50%) scale(1.1);
+            }
 
         .nav-section {
             display: flex;
@@ -104,23 +105,23 @@
             white-space: nowrap;
         }
 
-        .nav-item-custom:hover {
-            background: var(--light-orange);
-            color: var(--primary-orange);
-            text-decoration: none;
-            transform: translateY(-2px);
-        }
+            .nav-item-custom:hover {
+                background: var(--light-orange);
+                color: var(--primary-orange);
+                text-decoration: none;
+                transform: translateY(-2px);
+            }
 
-        .nav-item-custom .icon {
-            font-size: 1.2rem;
-            margin-bottom: 2px;
-        }
+            .nav-item-custom .icon {
+                font-size: 1.2rem;
+                margin-bottom: 2px;
+            }
 
-        .nav-item-custom .text {
-            font-size: 0.85rem;
-            font-weight: 500;
-            line-height: 1;
-        }
+            .nav-item-custom .text {
+                font-size: 0.85rem;
+                font-weight: 500;
+                line-height: 1;
+            }
 
         .dropdown-custom {
             position: relative;
@@ -132,10 +133,10 @@
             cursor: pointer;
         }
 
-        .dropdown-toggle-custom::after {
-            margin-left: 5px;
-            font-size: 0.7rem;
-        }
+            .dropdown-toggle-custom::after {
+                margin-left: 5px;
+                font-size: 0.7rem;
+            }
 
         .dropdown-menu-custom {
             position: absolute;
@@ -151,9 +152,9 @@
             overflow: hidden;
         }
 
-        .dropdown-menu-custom.show {
-            display: block;
-        }
+            .dropdown-menu-custom.show {
+                display: block;
+            }
 
         .dropdown-item-custom {
             padding: 12px 20px;
@@ -165,14 +166,14 @@
             border-bottom: 1px solid var(--border-light);
         }
 
-        .dropdown-item-custom:last-child {
-            border-bottom: none;
-        }
+            .dropdown-item-custom:last-child {
+                border-bottom: none;
+            }
 
-        .dropdown-item-custom:hover {
-            background: var(--light-orange);
-            color: var(--primary-orange);
-        }
+            .dropdown-item-custom:hover {
+                background: var(--light-orange);
+                color: var(--primary-orange);
+            }
 
         .cart-badge {
             position: absolute;
@@ -195,9 +196,9 @@
             border-radius: 8px;
         }
 
-        .navbar-toggler:focus {
-            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
-        }
+            .navbar-toggler:focus {
+                box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+            }
 
         .navbar-toggler-icon {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23ff6b35' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
@@ -222,50 +223,173 @@
             transition: all 0.2s ease;
         }
 
-        .mobile-nav-item:hover {
-            background: var(--light-orange);
-            color: var(--primary-orange);
-        }
-
+            .mobile-nav-item:hover {
+                background: var(--light-orange);
+                color: var(--primary-orange);
+            }
         /* Responsive Design */
         @@media (max-width: 991px) {
-            .nav-section {
-                display: none;
-            }
+            .nav-section
 
-            .mobile-nav {
-                display: block;
-            }
-
-            .search-container {
-                margin: 10px 0;
-                max-width: 100%;
-            }
-
-            .navbar-brand {
-                font-size: 1.5rem;
-            }
+        {
+            display: none;
         }
 
+        .mobile-nav {
+            display: block;
+        }
+
+        .search-container {
+            margin: 10px 0;
+            max-width: 100%;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+        }
+
+        }
         @@media (max-width: 576px) {
-            .navbar-brand {
-                font-size: 1.2rem;
-            }
+            .navbar-brand
 
-            .search-container {
-                margin: 8px 0;
-            }
-
-            .nav-item-custom .text {
-                font-size: 0.75rem;
-            }
+        {
+            font-size: 1.2rem;
         }
 
-        /* Category dropdown için özel stiller */
-        .categories-dropdown .dropdown-menu-custom {
-            min-width: 250px;
-            max-height: 300px;
+        .search-container {
+            margin: 8px 0;
+        }
+
+        .nav-item-custom .text {
+            font-size: 0.75rem;
+        }
+
+        }
+
+        /* Kategoriler Mega Menu - Tek Sütun */
+        .categories-dropdown-enhanced {
+            position: relative;
+        }
+
+        .categories-mega-menu-enhanced {
+            position: absolute;
+            top: 100%;
+            left: -50px;
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            min-width: 300px;
+            max-width: 350px;
+            z-index: 1001;
+            display: none;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+            .categories-mega-menu-enhanced.show {
+                display: block;
+                animation: slideDown 0.2s ease-out;
+            }
+
+        @@keyframes slideDown {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .categories-header-enhanced {
+            padding: 16px 20px;
+            background: var(--light-orange);
+            border-bottom: 1px solid var(--border-light);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .categories-content-enhanced {
+            max-height: 350px;
             overflow-y: auto;
+        }
+
+        .category-main-item-enhanced {
+            padding: 12px 20px;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid var(--border-light);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+            .category-main-item-enhanced:last-child {
+                border-bottom: none;
+            }
+
+            .category-main-item-enhanced:hover {
+                background: var(--light-orange);
+                color: var(--primary-orange);
+                text-decoration: none;
+            }
+
+            .category-main-item-enhanced i {
+                margin-right: 10px;
+                width: 16px;
+                font-size: 0.9rem;
+            }
+
+        .categories-footer-enhanced {
+            background: #f8f9fa;
+            padding: 16px 20px;
+            text-align: center;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .view-all-categories-enhanced {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border: 2px solid var(--primary-orange);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+            .view-all-categories-enhanced:hover {
+                background: var(--primary-orange);
+                color: white;
+                text-decoration: none;
+                transform: scale(1.05);
+            }
+
+        /* Mobil uyumluluk */
+        @@media (max-width: 768px) {
+            .categories-mega-menu-enhanced
+
+        {
+            left: -100px;
+            min-width: 280px;
+            max-width: 90vw;
+        }
+
         }
     </style>
 </head>
@@ -274,8 +398,7 @@
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <!-- Logo -->
-                @* <i class="bi bi-shop-window"></i> *@
-                <a class="navbar-brand" href="/">SendeAl.com</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SendeAl.com</a>
 
                 <!-- Mobile Toggle Button -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -298,102 +421,152 @@
                     <!-- Desktop Navigation -->
                     <div class="nav-section d-none d-lg-flex">
                         <!-- Home -->
-                        <a href="/" class="nav-item-custom">
+                        <a asp-controller="Home" asp-action="Index" class="nav-item-custom">
                             <span class="icon">
                                 <i class="bi bi-house-door"></i>
                             </span>
                             <span class="text">Anasayfa</span>
                         </a>
 
-                        <!-- Categories Dropdown -->
-                        <div class="dropdown-custom categories-dropdown">
+                        <!-- Kategoriler Dropdown - Tek Sütun -->
+                        <div class="dropdown-custom categories-dropdown-enhanced">
                             <a href="#" class="nav-item-custom dropdown-toggle-custom" data-bs-toggle="dropdown">
                                 <span class="icon">
                                     <i class="bi bi-grid-3x3-gap"></i>
                                 </span>
                                 <span class="text">Kategoriler</span>
                             </a>
-                            <div class="dropdown-menu-custom">
-                                <a href="/category/electronics" class="dropdown-item-custom">
-                                    <i class="bi bi-laptop me-2"></i> Elektronik
-                                </a>
-                                <a href="/category/clothing" class="dropdown-item-custom">
-                                    <i class="bi bi-bag me-2"></i> Giyim
-                                </a>
-                                <a href="/category/books" class="dropdown-item-custom">
-                                    <i class="bi bi-book me-2"></i> Kitap
-                                </a>
-                                <a href="/category/sports" class="dropdown-item-custom">
-                                    <i class="bi bi-bicycle me-2"></i> Spor
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Account Dropdown -->
-                        <div class="dropdown-custom">
-                            <a href="#" class="nav-item-custom dropdown-toggle-custom" data-bs-toggle="dropdown">
-                                <span class="icon">
-                                    <i class="bi bi-person-fill"></i>
-                                </span>
-                                <span class="text">Hesabım</span>
-                            </a>
-                            <div class="dropdown-menu-custom">
-                                <a href="/Account" class="dropdown-item-custom">
-                                    <i class="bi bi-person me-2"></i> Kullanıcı Bilgilerim
-                                </a>
-                                <a href="/MyAddresses" class="dropdown-item-custom">
-                                    <i class="bi bi-geo-alt me-2"></i> Kayıtlı Adreslerim
-                                </a>
-                                <a href="/Account/MyOrders" class="dropdown-item-custom">
-                                    <i class="bi bi-bag-check me-2"></i> Siparişlerim
-                                </a>
-                                <a href="/Account/" class="dropdown-item-custom">
-                                    <i class="bi bi-star me-2"></i> Değerlendirmelerim
-                                </a>
-                                <a href="/Account/SignOut" class="dropdown-item-custom text-danger">
-                                    <i class="bi bi-box-arrow-right me-2"></i> Oturumu Kapat
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Favorites -->
-                        <a href="/Favorites" class="nav-item-custom position-relative">
-                            <span class="icon">
-                                <i class="bi bi-heart-fill"></i>
-                            </span>
-                            <span class="text">Favoriler</span>
-                            <span class="cart-badge">3</span>
-                        </a>
-
-                        <!-- Cart Dropdown -->
-                        <div class="dropdown-custom">
-                            <a href="#" class="nav-item-custom dropdown-toggle-custom position-relative" data-bs-toggle="dropdown">
-                                <span class="icon">
-                                    <i class="bi bi-cart-fill"></i>
-                                </span>
-                                <span class="text">Sepetim</span>
-                                <span class="cart-badge">2</span>
-                            </a>
-                            <div class="dropdown-menu-custom">
-                                <a href="/product/1" class="dropdown-item-custom">
-                                    <img src="https://via.placeholder.com/40x40/ff6b35/white?text=P1" alt="Product" class="me-2 rounded">
-                                    Örnek Ürün 1
-                                </a>
-                                <a href="/product/2" class="dropdown-item-custom">
-                                    <img src="https://via.placeholder.com/40x40/ff6b35/white?text=P2" alt="Product" class="me-2 rounded">
-                                    Örnek Ürün 2
-                                </a>
-                                <div class="text-center p-3">
-                                    <a href="/Cart" class="btn btn-warning rounded-pill px-4">
-                                        <i class="bi bi-cart-check me-1"></i>
-                                        Sepete Git
+                            <div class="categories-mega-menu-enhanced">
+                                <div class="categories-header-enhanced">
+                                    <i class="bi bi-collection"></i>
+                                    <span>Ürün Kategorileri</span>
+                                </div>
+                                <div class="categories-content-enhanced">
+                                    @await Component.InvokeAsync("Categories")
+                                </div>
+                                <div class="categories-footer-enhanced">
+                                    <a href="/categories" class="view-all-categories-enhanced">
+                                        <i class="bi bi-arrow-right-circle"></i>
+                                        <span>Tüm Kategorileri Gör</span>
                                     </a>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Account Dropdown -->
+                        @if (Context.User.Identity.IsAuthenticated)
+                        {
+                            <div class="dropdown-custom">
+                                <a href="#" class="nav-item-custom dropdown-toggle-custom" data-bs-toggle="dropdown">
+                                    <span class="icon">
+                                        <i class="bi bi-person-fill"></i>
+                                    </span>
+                                    <span class="text">Hesabım</span>
+                                </a>
+                                <div class="dropdown-menu-custom">
+                                    <a href="/Account" class="dropdown-item-custom">
+                                        <i class="bi bi-person me-2"></i> Kullanıcı Bilgilerim
+                                    </a>
+                                    <a href="/MyAddresses" class="dropdown-item-custom">
+                                        <i class="bi bi-geo-alt me-2"></i> Kayıtlı Adreslerim
+                                    </a>
+                                    <a href="/Account/MyOrders" class="dropdown-item-custom">
+                                        <i class="bi bi-bag-check me-2"></i> Siparişlerim
+                                    </a>
+                                    <a href="/Account/" class="dropdown-item-custom">
+                                        <i class="bi bi-star me-2"></i> Değerlendirmelerim
+                                    </a>
+                                    <a href="/Account/SignOut" class="dropdown-item-custom text-danger">
+                                        <i class="bi bi-box-arrow-right me-2"></i> Oturumu Kapat
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="dropdown-custom">
+                                <a href="#" class="nav-item-custom dropdown-toggle-custom" data-bs-toggle="dropdown">
+                                    <span class="icon">
+                                        <i class="bi bi-person"></i>
+                                    </span>
+                                    <span class="text">Giriş Yap</span>
+                                </a>
+                                <div class="dropdown-menu-custom">
+                                    <a href="/Account/SignIn" class="dropdown-item-custom">
+                                        <i class="bi bi-box-arrow-in-right me-2"></i> Giriş
+                                    </a>
+                                    <a href="/Account/SignUp" class="dropdown-item-custom">
+                                        <i class="bi bi-person-plus me-2"></i> Üye Ol
+                                    </a>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Favorites -->
+                        <a href="/Favorites" class="nav-item-custom position-relative">
+                            <span class="icon">
+                                @{
+                                    var favorites = Context.Session.GetJson<List<Product>>("GetFavorites");
+                                    if (favorites is not null && favorites.Count > 0)
+                                    {
+                                        <i class="bi bi-heart-fill"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-heart"></i>
+                                    }
+                                }
+                            </span>
+                            <span class="text">Favoriler</span>
+                            @if (favorites is not null && favorites.Count > 0)
+                            {
+                                <span class="cart-badge">@favorites.Count</span>
+                            }
+                        </a>
+
+                        <!-- Cart Dropdown -->
+                        @{
+                            var cart = Context.Session.GetJson<Eticaret.Service.Concrete.CartService>("Cart");
+                        }
+                        @if (cart != null && cart.CartLines.Count > 0)
+                        {
+                            <div class="dropdown-custom">
+                                <a href="#" class="nav-item-custom dropdown-toggle-custom position-relative" data-bs-toggle="dropdown">
+                                    <span class="icon">
+                                        <i class="bi bi-cart-fill"></i>
+                                    </span>
+                                    <span class="text">Sepetim</span>
+                                    <span class="cart-badge">@cart.CartLines.Count</span>
+                                </a>
+                                <div class="dropdown-menu-custom">
+                                    @foreach (var item in cart.CartLines)
+                                    {
+                                        <a href="/Products/Details/@item.Product.Id" class="dropdown-item-custom">
+                                            <img src="/Img/Products/@item.Product.Image" alt="@item.Product.Name" class="me-2 rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                                            @item.Product.Name
+                                        </a>
+                                    }
+                                    <div class="text-center p-3">
+                                        <a href="/Cart" class="btn btn-warning rounded-pill px-4">
+                                            <i class="bi bi-cart-check me-1"></i>
+                                            Sepete Git
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <a href="/Cart" class="nav-item-custom">
+                                <span class="icon">
+                                    <i class="bi bi-cart"></i>
+                                </span>
+                                <span class="text">Sepetim</span>
+                            </a>
+                        }
+
                         <!-- Contact -->
-                        <a href="/Account/Contact" class="nav-item-custom">
+                        <a asp-controller="Home" asp-action="ContactUs" class="nav-item-custom">
                             <span class="icon">
                                 <i class="bi bi-envelope"></i>
                             </span>
@@ -403,22 +576,41 @@
 
                     <!-- Mobile Navigation -->
                     <div class="mobile-menu d-lg-none">
-                        <a href="/" class="mobile-nav-item">
+                        <a asp-controller="Home" asp-action="Index" class="mobile-nav-item">
                             <i class="bi bi-house-door me-2"></i> Anasayfa
                         </a>
                         <a href="/categories" class="mobile-nav-item">
                             <i class="bi bi-grid-3x3-gap me-2"></i> Kategoriler
                         </a>
-                        <a href="/Account" class="mobile-nav-item">
-                            <i class="bi bi-person-fill me-2"></i> Hesabım
-                        </a>
+                        @if (Context.User.Identity.IsAuthenticated)
+                        {
+                            <a href="/Account" class="mobile-nav-item">
+                                <i class="bi bi-person-fill me-2"></i> Hesabım
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="/Account/SignIn" class="mobile-nav-item">
+                                <i class="bi bi-person me-2"></i> Giriş Yap
+                            </a>
+                        }
                         <a href="/Favorites" class="mobile-nav-item">
-                            <i class="bi bi-heart me-2"></i> Favorilerim (3)
+                            <i class="bi bi-heart me-2"></i>
+                            Favorilerim
+                            @if (favorites is not null && favorites.Count > 0)
+                            {
+                                <span>(@favorites.Count)</span>
+                            }
                         </a>
                         <a href="/Cart" class="mobile-nav-item">
-                            <i class="bi bi-cart me-2"></i> Sepetim (2)
+                            <i class="bi bi-cart me-2"></i>
+                            Sepetim
+                            @if (cart != null && cart.CartLines.Count > 0)
+                            {
+                                <span>(@cart.CartLines.Count)</span>
+                            }
                         </a>
-                        <a href="/Contact" class="mobile-nav-item">
+                        <a asp-controller="Home" asp-action="ContactUs" class="mobile-nav-item">
                             <i class="bi bi-envelope me-2"></i> İletişim
                         </a>
                     </div>
@@ -426,8 +618,6 @@
             </div>
         </nav>
     </header>
-
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -438,7 +628,7 @@
                 const menu = this.nextElementSibling;
 
                 // Close all other dropdowns
-                document.querySelectorAll('.dropdown-menu-custom').forEach(function(otherMenu) {
+                document.querySelectorAll('.dropdown-menu-custom, .categories-mega-menu-enhanced').forEach(function(otherMenu) {
                     if (otherMenu !== menu) {
                         otherMenu.classList.remove('show');
                     }
@@ -452,7 +642,7 @@
         // Close dropdowns when clicking outside
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-custom')) {
-                document.querySelectorAll('.dropdown-menu-custom').forEach(function(menu) {
+                document.querySelectorAll('.dropdown-menu-custom, .categories-mega-menu-enhanced').forEach(function(menu) {
                     menu.classList.remove('show');
                 });
             }
@@ -469,6 +659,5 @@
         });
     </script>
 </body>
+<br />
 </html>
-<br />
-<br />
