@@ -19,7 +19,12 @@ namespace Eticaret.WebUI.Controllers
         private readonly IService<Order> _serviceOrder;
         private readonly IConfiguration _configuration;
 
-        public CartController(IService<Product> service, IService<Core.Entities.Address> serviceAddress, IService<AppUser> serviceAppUser, IService<Order> serviceOrder, IConfiguration configuration)
+        public CartController(
+            IService<Product> service,
+            IService<Core.Entities.Address> serviceAddress,
+            IService<AppUser> serviceAppUser,
+            IService<Order> serviceOrder,
+            IConfiguration configuration)
         {
             _serviceProduct = service;
             _serviceAddress = serviceAddress;
@@ -27,6 +32,7 @@ namespace Eticaret.WebUI.Controllers
             _serviceOrder = serviceOrder;
             _configuration = configuration;
         }
+
         public IActionResult Index()
         {
             var cart = GetCart();
@@ -37,10 +43,12 @@ namespace Eticaret.WebUI.Controllers
             };
             return View(model);
         }
+
         private CartService GetCart()
         {
             return HttpContext.Session.GetJson<CartService>("Cart") ?? new CartService();
         }
+
         public IActionResult Add(int id, int quantity = 1)
         {
             var product = _serviceProduct.Find(id);
@@ -53,6 +61,7 @@ namespace Eticaret.WebUI.Controllers
             }
             return RedirectToAction("Index");
         }
+
         public IActionResult Update(int id, int quantity = 1)
         {
             var product = _serviceProduct.Find(id);
@@ -64,6 +73,7 @@ namespace Eticaret.WebUI.Controllers
             }
             return RedirectToAction("Index");
         }
+
         public IActionResult Remove(int ProductId)
         {
             var product = _serviceProduct.Find(ProductId);
@@ -75,6 +85,7 @@ namespace Eticaret.WebUI.Controllers
             }
             return RedirectToAction("Index");
         }
+
         [Authorize]
         public async Task<IActionResult> Checkout()
         {
@@ -93,17 +104,18 @@ namespace Eticaret.WebUI.Controllers
             };
             return View(model);
         }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Checkout(string CardNumber, string CardNameSurname, string CardMonth, string CardYear, string CVV, string DeliveryAddress, string BillingAddress)
         {
-
             var cart = GetCart();
             var appUser = await _serviceAppUser.GetAsync(x => x.UserGuid.ToString() == HttpContext.User.FindFirst("UserGuid").Value);
             if (appUser == null)
             {
                 return RedirectToAction("SignIn", "Account");
             }
+
             var addresses = await _serviceAddress.GetAllAsync(a => a.AppUserId == appUser.Id && a.IsActive);
             var model = new CheckOutViewModel()
             {
@@ -111,22 +123,29 @@ namespace Eticaret.WebUI.Controllers
                 TotalPrice = cart.TotalPrice(),
                 Addresses = addresses
             };
-            if (string.IsNullOrWhiteSpace(CardNumber) || string.IsNullOrWhiteSpace(CardYear) || string.IsNullOrWhiteSpace(CardMonth) || string.IsNullOrWhiteSpace(CVV) || string.IsNullOrWhiteSpace(DeliveryAddress) || string.IsNullOrWhiteSpace(BillingAddress))
+
+            if (string.IsNullOrWhiteSpace(CardNumber) || string.IsNullOrWhiteSpace(CardYear) ||
+                string.IsNullOrWhiteSpace(CardMonth) || string.IsNullOrWhiteSpace(CVV) ||
+                string.IsNullOrWhiteSpace(DeliveryAddress) || string.IsNullOrWhiteSpace(BillingAddress))
             {
                 return View(model);
             }
+
             var faturaAdresi = addresses.FirstOrDefault(x => x.AddressGuid.ToString() == BillingAddress);
             var teslimatAdresi = addresses.FirstOrDefault(x => x.AddressGuid.ToString() == DeliveryAddress);
 
-            //ödeme çekme (entegrasyonlar bankalarla anlaşılarak yapılır)
-
+            if (faturaAdresi == null || teslimatAdresi == null)
+            {
+                TempData["Message"] = "<div class='alert alert-danger'>Adres bulunamadı!</div>";
+                return View(model);
+            }
 
             var siparis = new Order
             {
                 AppUserId = appUser.Id,
-                BillingAddress = $"{faturaAdresi.OpenAddress} {faturaAdresi.District} {faturaAdresi.City}", //BillingAddress,
+                BillingAddress = $"{faturaAdresi.OpenAddress} {faturaAdresi.District} {faturaAdresi.City}",
                 CustomerId = appUser.UserGuid.ToString(),
-                DeliveryAddress = $"{faturaAdresi.OpenAddress} {faturaAdresi.District} {faturaAdresi.City}",  //DeliveryAddress,
+                DeliveryAddress = $"{teslimatAdresi.OpenAddress} {teslimatAdresi.District} {teslimatAdresi.City}",
                 OrderDate = DateTime.Now,
                 TotalPrice = cart.TotalPrice(),
                 OrderNumber = Guid.NewGuid().ToString(),
@@ -134,68 +153,77 @@ namespace Eticaret.WebUI.Controllers
                 OrderLines = []
             };
 
-
             #region OdemeIslemi
-            Options options = new Options();
-            options.ApiKey = _configuration["IyzicOptions:ApiKey"];
-            options.SecretKey = _configuration["IyzicOptions:SecretKey"];
-            options.BaseUrl = _configuration["IyzicOptions:BaseUrl"]; //"https://sandbox-api.iyzipay.com";
+            Options options = new Options
+            {
+                ApiKey = _configuration["IyzicOptions:ApiKey"],
+                SecretKey = _configuration["IyzicOptions:SecretKey"],
+                BaseUrl = _configuration["IyzicOptions:BaseUrl"]
+            };
 
-            CreatePaymentRequest request = new CreatePaymentRequest();
-            request.Locale = Locale.TR.ToString();
-            request.ConversationId = HttpContext.Session.Id;
-            request.Price = siparis.TotalPrice.ToString().Replace(",",".");
-            request.PaidPrice = siparis.TotalPrice.ToString().Replace(",", ".");
-            request.Currency = Currency.TRY.ToString();
-            request.Installment = 1;
-            request.BasketId = "B" + HttpContext.Session.Id;
-            request.PaymentChannel = PaymentChannel.WEB.ToString();
-            request.PaymentGroup = PaymentGroup.PRODUCT.ToString();
+            CreatePaymentRequest request = new CreatePaymentRequest
+            {
+                Locale = Locale.TR.ToString(),
+                ConversationId = HttpContext.Session.Id,
+                Price = siparis.TotalPrice.ToString().Replace(",", "."),
+                PaidPrice = siparis.TotalPrice.ToString().Replace(",", "."),
+                Currency = Currency.TRY.ToString(),
+                Installment = 1,
+                BasketId = "B" + HttpContext.Session.Id,
+                PaymentChannel = PaymentChannel.WEB.ToString(),
+                PaymentGroup = PaymentGroup.PRODUCT.ToString()
+            };
 
-            PaymentCard paymentCard = new PaymentCard();
-            paymentCard.CardHolderName = CardNameSurname; //"John Doe";
-            paymentCard.CardNumber = CardNumber; //"5528790000000008";
-            paymentCard.ExpireMonth = CardMonth;//"12";
-            paymentCard.ExpireYear = CardYear; //"2030";
-            paymentCard.Cvc = CVV;//"123";
-            paymentCard.RegisterCard = 0;
+            PaymentCard paymentCard = new PaymentCard
+            {
+                CardHolderName = CardNameSurname,
+                CardNumber = CardNumber,
+                ExpireMonth = CardMonth,
+                ExpireYear = CardYear,
+                Cvc = CVV,
+                RegisterCard = 0
+            };
             request.PaymentCard = paymentCard;
 
-            Buyer buyer = new Buyer();
-            buyer.Id = "BY" + appUser.Id;
-            buyer.Name = appUser.Name;
-            buyer.Surname = appUser.SurName;
-            buyer.GsmNumber = appUser.Phone;
-            buyer.Email = appUser.Email;
-            buyer.IdentityNumber = "11111111111";
-            buyer.LastLoginDate = DateTime.Now.ToString("yyyy-mm-dd hh:mm:ss");//"2015-10-05 12:43:35";
-            buyer.RegistrationDate = appUser.CreateDate.ToString("yyyy-mm-dd hh:mm:ss");//"2013-04-21 15:12:09";
-            buyer.RegistrationAddress = siparis.DeliveryAddress;
-            buyer.Ip = HttpContext.Connection.RemoteIpAddress?.ToString(); //"85.34.78.112";
-            buyer.City = teslimatAdresi.City;
-            buyer.Country = "Turkey";
-            buyer.ZipCode = "34732";
+            Buyer buyer = new Buyer
+            {
+                Id = "BY" + appUser.Id,
+                Name = appUser.Name,
+                Surname = appUser.SurName,
+                GsmNumber = appUser.Phone,
+                Email = appUser.Email,
+                IdentityNumber = "11111111111",
+                LastLoginDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                RegistrationDate = appUser.CreateDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                RegistrationAddress = siparis.DeliveryAddress,
+                Ip = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                City = teslimatAdresi.City,
+                Country = "Turkey",
+                ZipCode = "34732"
+            };
             request.Buyer = buyer;
 
-            var shippingAddress = new Iyzipay.Model.Address();
-            shippingAddress.ContactName = appUser.Name + " " + appUser.SurName;
-            shippingAddress.City = appUser.Name + " " + appUser.SurName;
-            shippingAddress.Country = "Turkey";
-            shippingAddress.Description = teslimatAdresi.OpenAddress;
-            shippingAddress.ZipCode = "34742";
+            var shippingAddress = new Iyzipay.Model.Address
+            {
+                ContactName = appUser.Name + " " + appUser.SurName,
+                City = teslimatAdresi.City,
+                Country = "Turkey",
+                Description = teslimatAdresi.OpenAddress,
+                ZipCode = "34742"
+            };
             request.ShippingAddress = shippingAddress;
 
-            var billingAddress = new Iyzipay.Model.Address();
-            billingAddress.ContactName = appUser.Name + " " + appUser.SurName;
-            billingAddress.City = faturaAdresi.City;
-            billingAddress.Country = "Turkey";
-            billingAddress.Description = faturaAdresi.OpenAddress;
-            billingAddress.ZipCode = "34742";
+            var billingAddress = new Iyzipay.Model.Address
+            {
+                ContactName = appUser.Name + " " + appUser.SurName,
+                City = faturaAdresi.City,
+                Country = "Turkey",
+                Description = faturaAdresi.OpenAddress,
+                ZipCode = "34742"
+            };
             request.BillingAddress = billingAddress;
 
             List<BasketItem> basketItems = new List<BasketItem>();
-
-
             foreach (var item in cart.CartLines)
             {
                 siparis.OrderLines.Add(new OrderLine
@@ -205,44 +233,41 @@ namespace Eticaret.WebUI.Controllers
                     Quantity = item.Quantity,
                     UnitPrice = item.Product.Price,
                 });
-                basketItems.Add(
-                    new BasketItem
-                    {
-                        Id = item.Product.Id.ToString(),
-                        Name = item.Product.Name,
-                        Category1 = "Collectibles",
-                        ItemType = BasketItemType.PHYSICAL.ToString(),
-                        Price = (item.Product.Price * item.Quantity).ToString().Replace(",",".")
-                    });
+
+                basketItems.Add(new BasketItem
+                {
+                    Id = item.Product.Id.ToString(),
+                    Name = item.Product.Name,
+                    Category1 = "Collectibles",
+                    ItemType = BasketItemType.PHYSICAL.ToString(),
+                    Price = (item.Product.Price * item.Quantity).ToString().Replace(",", ".")
+                });
             }
 
-            if (siparis.TotalPrice<999)
+            if (siparis.TotalPrice < 999)
             {
-                basketItems.Add(
-                    new BasketItem
-                    {
-                        Id = "Kargo",
-                        Name = "Kargo Ücreti",
-                        Category1 = "Kargo Ücreti",
-                        ItemType = BasketItemType.VIRTUAL.ToString(),
-                        Price = "99"
-                    });
+                basketItems.Add(new BasketItem
+                {
+                    Id = "Kargo",
+                    Name = "Kargo Ücreti",
+                    Category1 = "Kargo Ücreti",
+                    ItemType = BasketItemType.VIRTUAL.ToString(),
+                    Price = "99"
+                });
                 siparis.TotalPrice += 99;
-                request.Price = (siparis.TotalPrice).ToString().Replace(",",".");
-                request.PaidPrice = (siparis.TotalPrice).ToString().Replace(",", ".");
+                request.Price = siparis.TotalPrice.ToString().Replace(",", ".");
+                request.PaidPrice = siparis.TotalPrice.ToString().Replace(",", ".");
             }
 
             request.BasketItems = basketItems;
 
             Payment payment = await Payment.Create(request, options);
-
             #endregion
+
             try
             {
-                // Ödeme sonucu kontrolü
                 if (payment.Status == "success")
                 {
-                    // İşlem başarılı, sipariş oluşturulabilir.
                     await _serviceOrder.AddAsync(siparis);
                     var sonuc = await _serviceOrder.SaveChangesAsync();
                     if (sonuc > 0)
@@ -253,23 +278,21 @@ namespace Eticaret.WebUI.Controllers
                 }
                 else
                 {
-                    // Eğer ödeme başarısızsa, hata mesajını TempData'ya aktar
-                    TempData["Message"] = $"<div class='alert alert-danger'> Ödeme İşlemi Başarısız! </div>({payment.ErrorMessage ?? "Bilinmeyen hata."})";
+                    TempData["Message"] =
+                        $"<div class='alert alert-danger'> Ödeme İşlemi Başarısız! </div>({payment.ErrorMessage ?? "Bilinmeyen hata."})";
                     return RedirectToAction("Checkout");
                 }
-
-
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                TempData["Message"] = "<div class='alert alert-danger'> Hata Oluştu! </div>";
+                TempData["Message"] = $"<div class='alert alert-danger'> Hata Oluştu! ({ex.Message}) </div>";
             }
 
             return View(model);
         }
+
         public IActionResult Thanks()
         {
-
             return View();
         }
     }

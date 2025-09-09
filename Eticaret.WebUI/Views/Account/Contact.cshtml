@@ -3,30 +3,30 @@
     ViewData["Title"] = "İletişim";
 }
 
-<h2>İletişim</h2>
-
+<h2>Bizimle İletişime Geçin</h2>
+<hr />
 <form asp-action="Contact" method="post" class="row g-3">
-    <div class="col-md-6">
+    <div class="col-md-7">
         <label asp-for="NameSurname" class="form-label">Adınız</label>
         <input asp-for="NameSurname" class="form-control" />
         <span asp-validation-for="NameSurname" class="text-danger"></span>
-    </div>
-    <div class="col-md-6">
+    </div><br />
+    <div class="col-md-7">
         <label asp-for="Email" class="form-label">Email</label>
         <input asp-for="Email" type="email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="col-12">
+    </div><br />
+    <div class="col-md-7">
         <label asp-for="Subject" class="form-label">Konu</label>
         <input asp-for="Subject" class="form-control" />
         <span asp-validation-for="Subject" class="text-danger"></span>
-    </div>
-    <div class="col-12">
+    </div><br />
+    <div class="col-md-7">
         <label asp-for="Message" class="form-label">Mesaj</label>
         <textarea asp-for="Message" class="form-control" rows="5"></textarea>
         <span asp-validation-for="Message" class="text-danger"></span>
-    </div>
-    <div class="col-12">
+    </div><br />
+    <div >
         <button type="submit" class="btn btn-primary">Gönder</button>
     </div>
 </form>
