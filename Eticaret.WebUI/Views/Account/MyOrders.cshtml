@@ -1,80 +1,622 @@
 ﻿@model IEnumerable<Order>
-
 @{
     ViewData["Title"] = "Siparişlerim";
 }
 
-<h1>Siparişlerim</h1>
-
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderDate)
-            </th>
-            <th>Sipariş Özeti</th>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderState)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalPrice)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderDate)
-                </td>
-                <td>
-                    @item.OrderLines.Count Ürün
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderState)
-                </td>
-            </tr>
-            <tr>
-                <td colspan="5">
-                    <table class="table table-sm">
-                        <tr>
-                            <th></th>
-                            <th>Ürün</th>
-                            <th>Fiyat</th>
-                            <th>Miktar</th>
-                            <th>Toplam</th>
-                        </tr>
-                        <tbody>
-                            @foreach (var item2 in item.OrderLines)
-                            {
-                                <tr>
-                                    <td><img src="/Img/Products/@item2.Product.Image" alt="" height="37" /></td>
-                                    <td>
-                                        <a class="nav-link text-dark" href="/Products/Details/@item2.Product.Id">
-                                            @item2.Product.Name
-                                        </a>
-                                    </td>
-                                    <td>@item2.UnitPrice.ToString("c")</td>
-                                    <td>
-                                        @item2.Quantity
-                                    </td>
-                                    <td>@((item2.Quantity * item2.UnitPrice).ToString("c"))</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siparişlerim - SendeAl.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --light-orange: #fff4f0;
+            --dark-orange: #e55a2b;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --white: #ffffff;
+            --border-light: #e9ecef;
+            --shadow: rgba(255, 107, 53, 0.15);
+            --success-green: #28a745;
+            --warning-yellow: #ffc107;
+            --info-blue: #17a2b8;
+            --dark-purple: #8e44ad;
+            --red-cancel: #e74c3c;
         }
-    </tbody>
-</table>
+
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, var(--light-orange) 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Başlık Tasarımı */
+        .display-4 {
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+            .display-4::after {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 4px;
+                background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+                border-radius: 2px;
+            }
+
+        /* Ana Kart Container */
+        .orders-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        /* Sipariş Kartları */
+        .order-card {
+            border: none;
+            border-radius: 0;
+            margin-bottom: 0;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+            .order-card:hover {
+                background: var(--light-orange);
+            }
+
+            .order-card:not(:last-child) {
+                border-bottom: 2px solid var(--border-light);
+            }
+
+        /* Ana Sipariş Satırı */
+        .order-main-row {
+            background: linear-gradient(135deg, #f8f9fa, white);
+        }
+
+            .order-main-row td {
+                padding: 25px 20px;
+                vertical-align: middle;
+                font-weight: 600;
+                color: var(--text-dark);
+                border-bottom: none;
+            }
+
+            .order-main-row:hover td {
+                background: linear-gradient(135deg, var(--light-orange), #faf7f5);
+            }
+
+        /* Detay Satırı */
+        .order-detail-row td {
+            padding: 0;
+            background: #fafafa;
+            border-bottom: none;
+        }
+
+        .order-detail-table {
+            margin: 0;
+            background: transparent;
+        }
+
+            .order-detail-table thead th {
+                background: linear-gradient(135deg, var(--text-light), #95a5a6);
+                color: white;
+                font-weight: 600;
+                padding: 15px;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+
+            .order-detail-table tbody td {
+                padding: 15px;
+                vertical-align: middle;
+                border-bottom: 1px solid #e9ecef;
+                background: white;
+            }
+
+            .order-detail-table tbody tr:hover td {
+                background: var(--light-orange);
+            }
+
+            .order-detail-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            /* Ürün Resmi */
+            .order-detail-table td img {
+                border-radius: 8px;
+                transition: all 0.3s ease;
+                object-fit: cover;
+                width: 40px;
+                height: 40px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .order-detail-table tr:hover td img {
+                transform: scale(1.1);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+
+        /* Ürün Linki */
+        .nav-link {
+            color: var(--text-dark) !important;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+            .nav-link:hover {
+                color: var(--primary-orange) !important;
+                text-decoration: underline;
+                transform: translateX(5px);
+            }
+
+        /* Fiyat Tasarımı */
+        .price-cell {
+            color: var(--primary-orange);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* Sipariş Numarası */
+        .order-number {
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        /* Sipariş Durumu Badge'leri */
+        .order-status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            white-space: nowrap; /* Metnin tek satırda kalmasını sağlar */
+        }
+
+            /* YENİ VE GÜNCELLENMİŞ DURUM SINIFLARI */
+            .order-status.waiting {
+                background: linear-gradient(45deg, var(--warning-yellow), #f39c12);
+                color: white;
+            }
+
+            .order-status.approved {
+                background: linear-gradient(45deg, #1abc9c, #16a085);
+                color: white;
+            }
+
+            .order-status.shipped {
+                background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+                color: white;
+            }
+
+            .order-status.completed {
+                background: linear-gradient(45deg, var(--success-green), #27ae60);
+                color: white;
+            }
+
+            .order-status.cancelled {
+                background: linear-gradient(45deg, var(--red-cancel), #c0392b);
+                color: white;
+            }
+
+            .order-status.returned {
+                background: linear-gradient(45deg, #9b59b6, var(--dark-purple));
+                color: white;
+            }
+
+        /* Sipariş Özeti */
+        .order-summary {
+            background: linear-gradient(45deg, var(--light-orange), #fef7f0);
+            padding: 10px 15px;
+            border-radius: 15px;
+            color: var(--dark-orange);
+            font-weight: 600;
+            display: inline-block;
+            border: 1px solid var(--secondary-orange);
+        }
+
+        /* Tarih Formatı */
+        .order-date {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Boş Durum */
+        .empty-orders {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid var(--secondary-orange);
+            border-radius: 20px;
+            color: var(--text-dark);
+            text-align: center;
+            padding: 60px 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+            .empty-orders::before {
+                content: '📦';
+                font-size: 4rem;
+                display: block;
+                margin-bottom: 20px;
+            }
+
+            .empty-orders h3 {
+                margin-bottom: 20px;
+                color: var(--dark-orange);
+                font-weight: 700;
+            }
+
+        .shopping-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange)) !important;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .shopping-btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .shopping-btn:hover::before {
+                left: 100%;
+            }
+
+            .shopping-btn:hover {
+                background: linear-gradient(45deg, var(--dark-orange), var(--primary-orange)) !important;
+                transform: translateY(-3px);
+                box-shadow: 0 10px 30px var(--shadow);
+                text-decoration: none;
+                color: white !important;
+            }
+
+        /* Ana Tablo Başlığı */
+        .main-table-header {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: white;
+        }
+
+            .main-table-header th {
+                padding: 20px;
+                font-weight: 700;
+                font-size: 1rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+
+        /* Responsive Tasarım */
+        @@media (max-width: 768px) {
+            .order-main-row td, .order-detail-table td, .order-detail-table th {
+                padding: 15px 10px;
+                font-size: 0.9rem;
+            }
+
+                .order-detail-table td img {
+                    width: 35px;
+                    height: 35px;
+                }
+
+            .display-4 {
+                font-size: 2rem;
+            }
+
+            .order-number,
+            .order-status,
+            .order-summary {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .orders-container {
+                border-radius: 15px;
+            }
+
+            .order-main-row td {
+                padding: 15px 10px;
+            }
+
+            .order-detail-table td,
+            .order-detail-table th {
+                padding: 10px 8px;
+                font-size: 0.85rem;
+            }
+
+            .empty-orders {
+                padding: 40px 20px;
+            }
+        }
+
+        /* Animasyon Efektleri */
+        .order-card {
+            animation: slideInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @@keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .order-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .order-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .order-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .order-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .order-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .order-card:nth-child(n+6) {
+            animation-delay: 0.6s;
+        }
+
+        /* Genişletilmiş Durumda Detay Gösterimi */
+        .order-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+            .order-details.expanded {
+                max-height: 1000px;
+            }
+
+        /* Toggle Butonu */
+        .toggle-details {
+            background: none;
+            border: none;
+            color: var(--primary-orange);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 5px;
+            border-radius: 50%;
+        }
+
+            .toggle-details:hover {
+                background: var(--light-orange);
+                transform: scale(1.1);
+            }
+
+            .toggle-details.expanded {
+                transform: rotate(180deg);
+            }
+    </style>
+</head>
+<body>
+    <section class="container my-5">
+        <div class="text-center">
+            <h1 class="display-4">Siparişlerim</h1>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="orders-container">
+                <table class="table table-hover mb-0">
+                    <thead class="main-table-header">
+                        <tr>
+                            <th><i class="bi bi-hash me-2"></i>@Html.DisplayNameFor(model => model.OrderNumber)</th>
+                            <th><i class="bi bi-currency-exchange me-2"></i>@Html.DisplayNameFor(model => model.TotalPrice)</th>
+                            <th><i class="bi bi-calendar-date me-2"></i>@Html.DisplayNameFor(model => model.OrderDate)</th>
+                            <th><i class="bi bi-box-seam me-2"></i>Sipariş Özeti</th>
+                            <th><i class="bi bi-truck me-2"></i>@Html.DisplayNameFor(model => model.OrderState)</th>
+                            <th>Detay</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            // Sipariş durumuna göre dinamik ikon ve sınıf atama
+                            var orderState = item.OrderState;
+                            string statusClass = "";
+                            string iconClass = "";
+
+                            switch (orderState)
+                            {
+                                case EnumOrderState.Waiting:
+                                    statusClass = "waiting";
+                                    iconClass = "bi bi-hourglass-split";
+                                    break;
+                                case EnumOrderState.Approved:
+                                    statusClass = "approved";
+                                    iconClass = "bi bi-check-circle";
+                                    break;
+                                case EnumOrderState.Shipped:
+                                    statusClass = "shipped";
+                                    iconClass = "bi bi-truck";
+                                    break;
+                                case EnumOrderState.Completed:
+                                    statusClass = "completed";
+                                    iconClass = "bi bi-bag-check";
+                                    break;
+                                case EnumOrderState.Cancelled:
+                                    statusClass = "cancelled";
+                                    iconClass = "bi bi-x-circle";
+                                    break;
+                                case EnumOrderState.Returned:
+                                    statusClass = "returned";
+                                    iconClass = "bi bi-arrow-return-left";
+                                    break;
+                            }
+
+                            <tr class="order-card order-main-row">
+                                <td>
+                                    <span class="order-number">
+                                        #@Html.DisplayFor(modelItem => item.Id)
+                                    </span>
+                                </td>
+                                <td class="price-cell">
+                                    ₺@Html.DisplayFor(modelItem => item.TotalPrice)
+                                </td>
+                                <td class="order-date">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    @Html.DisplayFor(modelItem => item.OrderDate)
+                                </td>
+                                <td>
+                                    <span class="order-summary">
+                                        <i class="bi bi-bag-check me-1"></i>
+                                        @item.OrderLines.Count Ürün
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="order-status @statusClass">
+                                        <i class="@iconClass me-2"></i>
+                                        @Html.DisplayFor(modelItem => item.OrderState)
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="toggle-details" onclick="toggleOrderDetails(this)" title="Detayları Göster/Gizle">
+                                        <i class="bi bi-chevron-down"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="order-detail-row">
+                                <td colspan="6">
+                                    <div class="order-details">
+                                        <table class="table order-detail-table">
+                                            <thead>
+                                                <tr>
+                                                    <th><i class="bi bi-image me-1"></i></th>
+                                                    <th><i class="bi bi-box me-1"></i> Ürün</th>
+                                                    <th><i class="bi bi-tag me-1"></i> Fiyat</th>
+                                                    <th><i class="bi-grid-3x3"></i> Miktar</th>
+                                                    <th><i class="bi bi-calculator me-1"></i> Toplam</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item2 in item.OrderLines)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <img src="/Img/Products/@item2.Product.Image" alt="@item2.Product.Name" />
+                                                        </td>
+                                                        <td>
+                                                            <a class="nav-link text-dark" href="/Products/Details/@item2.Product.Id">
+                                                                <i class="bi bi-box-arrow-up-right me-1"></i>
+                                                                @item2.Product.Name
+                                                            </a>
+                                                        </td>
+                                                        <td class="price-cell">@item2.UnitPrice.ToString("c")</td>
+                                                        <td>
+                                                            <span class="badge bg-secondary">@item2.Quantity</span>
+                                                        </td>
+                                                        <td class="price-cell">@((item2.Quantity * item2.UnitPrice).ToString("c"))</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-orders">
+                <h3>Henüz Siparişiniz Bulunmamaktadır</h3>
+                <p class="mb-0">İlk siparişinizi vermek için alışverişe başlayabilirsiniz.</p>
+                <a href="/" class="shopping-btn">
+                    <i class="bi bi-shop me-2"></i>Alışverişe Başla
+                </a>
+            </div>
+        }
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sipariş detaylarını aç/kapat
+        function toggleOrderDetails(button) {
+            const detailsRow = button.closest('tr').nextElementSibling;
+            const detailsContainer = detailsRow.querySelector('.order-details');
+            const icon = button.querySelector('i');
+
+            if (detailsContainer.classList.contains('expanded')) {
+                detailsContainer.classList.remove('expanded');
+                button.classList.remove('expanded');
+                icon.className = 'bi bi-chevron-down';
+                button.title = 'Detayları Göster';
+            } else {
+                detailsContainer.classList.add('expanded');
+                button.classList.add('expanded');
+                icon.className = 'bi bi-chevron-up';
+                button.title = 'Detayları Gizle';
+            }
+        }
+
+        // Sayfa yüklendiğinde tüm detayları kapalı tut
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.order-details').forEach(function(details) {
+                details.classList.remove('expanded');
+            });
+        });
+
+        // Ürün linklerine tıklama animasyonu
+        document.querySelectorAll('.nav-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
