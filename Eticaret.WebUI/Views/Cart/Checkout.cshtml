@@ -582,7 +582,7 @@
                                 <td>Kargo</td>
                                 <td>@(Model.TotalPrice > 999 ? "Ücretsiz" : Model.CartProducts.Any() ? "99₺" : "0₺")</td>
                             </tr>
-                            <tr class="table-primary">
+                            <tr class="">
                                 <th style="color:white; text-align:center;">Sipariş Toplamı</th>
                                 <td style="text-align:center;">
                                     @(Model.TotalPrice > 999 ? Model.TotalPrice.ToString("c") : (Model.CartProducts.Any() ? (Model.TotalPrice + 99).ToString("c") : Model.TotalPrice.ToString("c")))

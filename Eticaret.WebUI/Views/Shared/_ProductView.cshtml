@@ -268,8 +268,7 @@
         }
     </style>
 </head>
-<body class="bg-light p-4">
-    <!-- Sizin Orijinal Kodunuz - Sadece Tasarım Değişti -->
+<body class="">
     @model Product
     <div class="col mb-5">
         <div class="card h-100">
@@ -292,9 +291,9 @@
                     <!-- Product name-->
                     <h5 class="fw-bolder">@Model.Name</h5>
                     <!-- Product price-->
-                    <span class="text-danger text-decoration-line-through">
-                        @((Model.Price * 12 / 10).ToString("c"))
-                    </span><br />
+                    @* <span class="text-danger text-decoration-line-through"> *@
+                    @*     @((Model.Price * 12 / 10).ToString("c")) *@
+                    @* </span><br /> *@
                     @Model.Price.ToString("c")
                 </div>
             </div>
@@ -313,7 +312,6 @@
     </div>
 
     <script>
-        // Sepete ekle butonu animasyonu
         document.querySelectorAll('.btn-outline-dark').forEach(button => {
             button.addEventListener('click', function(e) {
                 this.classList.add('added');

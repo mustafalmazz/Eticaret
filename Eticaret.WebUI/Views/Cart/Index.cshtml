@@ -476,7 +476,7 @@
                             <tr>
                                 <th style="color:white; text-align:center;">Sipariş Toplamı</th>
                                 <td style="text-align:center;">
-                                    @(Model.TotalPrice > 999 ? Model.TotalPrice.ToString("c") : (Model.CartLines.Any() ? Model.TotalPrice + 99 : Model.TotalPrice.ToString("c")))
+                                    @(Model.TotalPrice > 999 ? Model.TotalPrice.ToString("c") : (Model.CartLines.Any() ?( Model.TotalPrice + 99).ToString("c") : Model.TotalPrice.ToString("c")))
                                 </td>
                             </tr>
                         </table>
@@ -533,11 +533,20 @@
             });
         });
 
-        // Satın Al butonuna animasyon
         document.querySelector('.btn-success')?.addEventListener('click', function(e) {
             this.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Yönlendiriliyor...';
             this.disabled = true;
         });
+
+        window.addEventListener("wheel", function(e) {
+            e.preventDefault();
+            window.scrollBy({
+                top: e.deltaY,
+                left: 0,
+                behavior: "smooth"
+            });
+        }, { passive: false });
+   
     </script>
 </body>
 </html>

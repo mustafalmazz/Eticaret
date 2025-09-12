@@ -38,7 +38,7 @@ namespace Eticaret.Core.Entities
         Approved,
         [Display(Name = "Kargoya Verildi")]
         Shipped,
-        [Display(Name = "Tamamlandı")]
+        [Display(Name = "Teslim Edildi")]
         Completed,
         [Display(Name = "İptal Edildi")]
         Cancelled,
