@@ -323,10 +323,11 @@
                 <div class="product-info-area">
                     <div class="product-code-tag">@Model.Product.ProductCode</div>
                     <h1 class="product-title">@Model.Product.Name</h1>
+                    <p class="product-description">@Model.Product.Description</p>
                     <div class="product-price">
                         <span>@Model.Product.Price.ToString("c")</span>
                     </div>
-                    <p class="product-description">@Model.Product.Description</p>
+                    
                     <div class="action-buttons-group">
                         <form asp-action="Add" asp-controller="Cart" style="display: flex; gap: 15px; align-items: center;">
                             <input type="hidden" value="@Model.Product.Id" name="id" />
