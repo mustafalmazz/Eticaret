@@ -1,36 +1,116 @@
 ﻿@model Eticaret.WebUI.Models.ContactViewModel
+
 @{
     ViewData["Title"] = "İletişim";
 }
 
-<h2>Bizimle İletişime Geçin</h2>
-<hr />
-<form asp-action="Contact" method="post" class="row g-3">
-    <div class="col-md-7">
-        <label asp-for="NameSurname" class="form-label">Adınız</label>
-        <input asp-for="NameSurname" class="form-control" />
-        <span asp-validation-for="NameSurname" class="text-danger"></span>
-    </div><br />
-    <div class="col-md-7">
-        <label asp-for="Email" class="form-label">Email</label>
-        <input asp-for="Email" type="email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div><br />
-    <div class="col-md-7">
-        <label asp-for="Subject" class="form-label">Konu</label>
-        <input asp-for="Subject" class="form-control" />
-        <span asp-validation-for="Subject" class="text-danger"></span>
-    </div><br />
-    <div class="col-md-7">
-        <label asp-for="Message" class="form-label">Mesaj</label>
-        <textarea asp-for="Message" class="form-control" rows="5"></textarea>
-        <span asp-validation-for="Message" class="text-danger"></span>
-    </div><br />
-    <div >
-        <button type="submit" class="btn btn-primary">Gönder</button>
-    </div>
-</form>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - SendeAl</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <style>
+        .contact-header {
+            background: linear-gradient(135deg, var(--white), var(--light-orange));
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--primary-orange);
+            box-shadow: 0 2px 15px rgba(255,107,53,0.1);
+        }
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+            .contact-header h2 {
+                color: var(--text-dark);
+                font-weight: 700;
+                font-size: 2rem;
+            }
+
+        .contact-form {
+            max-width: 700px;
+            margin: 0 auto 60px;
+            padding: 30px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+            .contact-form .form-label {
+                font-weight: 600;
+                color: var(--text-dark);
+            }
+
+            .contact-form .form-control {
+                border-radius: 8px;
+                transition: border-color .3s, box-shadow .3s;
+            }
+
+                .contact-form .form-control:focus {
+                    border-color: var(--primary-orange);
+                    box-shadow: 0 0 0 .2rem rgba(255,107,53,0.25);
+                }
+
+        .btn-contact {
+            background: var(--primary-orange);
+            border: none;
+            color: var(--white);
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-weight: 600;
+            transition: background .3s, transform .3s;
+        }
+
+            .btn-contact:hover {
+                background: var(--dark-orange);
+                transform: translateY(-2px);
+            }
+
+        .text-danger {
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    @* <div class="contact-header"> *@
+    @*     <h2>Bizimle İletişime Geçin</h2> *@
+    @* </div> *@
+    <div class="text-center py-2"> 
+        <h1>Bizimle İletişime Geçin</h1>
+    </div>
+
+    <div class="contact-form">
+        <form asp-action="Contact" method="post" novalidate>
+            <div class="mb-4">
+                <label asp-for="NameSurname" class="form-label">Adınız</label>
+                <input asp-for="NameSurname" class="form-control" />
+                <span asp-validation-for="NameSurname" class="text-danger"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" type="email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Subject" class="form-label">Konu</label>
+                <input asp-for="Subject" class="form-control" />
+                <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Message" class="form-label">Mesaj</label>
+                <textarea asp-for="Message" class="form-control" rows="6"></textarea>
+                <span asp-validation-for="Message" class="text-danger"></span>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn-contact">Gönder</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+</html>

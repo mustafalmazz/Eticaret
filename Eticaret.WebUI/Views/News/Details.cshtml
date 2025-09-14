@@ -1,15 +1,522 @@
 ﻿@model News
-
 @{
     ViewData["Title"] = Model.Name;
 }
 
-<h1 class="text-center">@Model.Name</h1>
-<div class="row">
-    <div class="col-md-6">
-        <img src="/Img/@Model.Image" alt="@Model.Name" class="img-fluid" />
-    </div> 
-    <div class="col-md-6"
-        @Model.Description
+<style>
+    :root {
+        --orange-primary: #ff5722; /* Daha canlı bir turuncu */
+        --orange-secondary: #ff7043;
+        --orange-light: #fff3e0;
+        --orange-dark: #e64a19;
+        --orange-subtle: rgba(255, 87, 34, 0.1);
+        --text-primary: #1e1e1e; /* Koyu gri */
+        --text-secondary: #424242; /* Orta gri */
+        --text-light: #757575; /* Açık gri */
+        --white: #ffffff;
+        --gray-50: #fbfbfb;
+        --gray-100: #ededed;
+        --shadow-sm: 0 4px 10px rgba(0,0,0,0.08);
+        --shadow-md: 0 10px 30px rgba(255, 87, 34, 0.2);
+        --shadow-lg: 0 25px 60px rgba(255, 87, 34, 0.25);
+        --gradient-primary: linear-gradient(135deg, #ff5722 0%, #ff7043 100%);
+        --gradient-subtle: linear-gradient(135deg, #fffaf5 0%, #ffffff 100%);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        line-height: 1.6;
+        color: var(--text-primary);
+        background: var(--gray-50);
+    }
+
+    /* General containers and alignment */
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Header Hero Section */
+    .hero-section {
+        background: var(--gradient-primary);
+        padding: 80px 0 100px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 0 0 50px 50px; /* Alttan yuvarlak kenar */
+        box-shadow: var(--shadow-md);
+    }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.75"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: slideGrid 20s linear infinite;
+        }
+
+    @@keyframes slideGrid {
+        0% {
+            transform: translateX(0) translateY(0);
+        }
+
+        100% {
+            transform: translateX(10px) translateY(10px);
+        }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: var(--white);
+        margin-bottom: 20px;
+        line-height: 1.2;
+        text-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        animation: fadeInUp 1s ease;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+        animation: fadeInUp 1s ease 0.2s both;
+    }
+
+    /* Main Content Container */
+    .content-container {
+        margin: -50px auto 80px;
+        position: relative;
+        z-index: 10;
+        padding: 0 20px; /* Genel padding'i kapsayıcıya taşıdım */
+    }
+
+    /* Campaign Card */
+    .campaign-card {
+        background: var(--white);
+        border-radius: 28px; /* Daha yuvarlak kenarlar */
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
+        border: 1px solid var(--gray-100); /* Hafif border */
+    }
+
+        .campaign-card:hover {
+            transform: translateY(-10px); /* Hafif yukarı kalkma */
+            box-shadow: var(--shadow-lg);
+        }
+
+    /* Image Section */
+    .image-section {
+        position: relative;
+        background: var(--gradient-subtle);
+        padding: 60px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 500px;
+    }
+
+    .image-decoration {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: var(--orange-subtle);
+        animation: float 6s ease-in-out infinite;
+    }
+
+        .image-decoration:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .image-decoration:nth-child(2) {
+            top: 20%;
+            right: 15%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 2s;
+        }
+
+        .image-decoration:nth-child(3) {
+            bottom: 15%;
+            left: 20%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 4s;
+        }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-20px) rotate(180deg);
+        }
+    }
+
+    .campaign-image {
+        max-width: 100%;
+        height: auto;
+        max-height: 400px;
+        border-radius: 20px; /* Daha yuvarlak kenarlar */
+        box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        position: relative;
+        z-index: 5;
+        object-fit: contain; /* Görselin bozulmadan sığması için */
+        cursor: zoom-in;
+    }
+
+        .campaign-image:hover {
+            transform: scale(1.05) rotate(2deg); /* Daha belirgin hover efekti */
+            box-shadow: 0 25px 70px rgba(0,0,0,0.18);
+        }
+
+    /* Content Section */
+    .content-section {
+        padding: 60px 50px;
+        position: relative;
+    }
+
+    .content-header {
+        margin-bottom: 40px;
+        padding-bottom: 25px;
+        border-bottom: 2px solid var(--gray-100);
+        position: relative;
+    }
+
+        .content-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100px; /* Daha uzun çizgi */
+            height: 3px; /* Daha kalın çizgi */
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+    .content-meta {
+        display: inline-flex;
+        align-items: center;
+        background: var(--orange-light);
+        color: var(--orange-dark);
+        font-size: 0.9rem; /* Biraz daha büyük font */
+        font-weight: 600;
+        padding: 8px 18px; /* Daha geniş padding */
+        border-radius: 24px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px; /* Harfler arası boşluk */
+    }
+
+        .content-meta::before {
+            content: '🎉'; /* Daha neşeli bir emoji */
+            margin-right: 8px;
+        }
+
+    .content-title {
+        font-size: 2.5rem; /* Daha büyük başlık */
+        font-weight: 800;
+        color: var(--text-primary);
+        line-height: 1.3;
+        margin-bottom: 0;
+    }
+
+    .content-description {
+        font-size: 1.15rem; /* Daha büyük font */
+        line-height: 1.9;
+        color: var(--text-secondary);
+        margin: 0;
+        position: relative;
+    }
+
+        .content-description p {
+            margin-bottom: 1.5rem;
+            transition: color 0.3s ease; /* Renk geçişi ekledim */
+        }
+
+            .content-description p:last-child {
+                margin-bottom: 0;
+            }
+
+            .content-description p:hover {
+                color: var(--text-primary);
+            }
+
+    /* Modal Styles */
+    .image-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(15px); /* Daha fazla blur */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.5s ease-in-out;
+    }
+
+        .image-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    .modal-content {
+        position: relative;
+        max-width: 90%;
+        max-height: 90%;
+        transform: scale(0.7);
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .image-modal.show .modal-content {
+        transform: scale(1);
+    }
+
+    .modal-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 25px;
+        box-shadow: 0 30px 100px rgba(255, 87, 34, 0.4); /* Daha belirgin gölge */
+        max-height: 85vh;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: -60px; /* Yukarıya aldım */
+        right: -20px;
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 55px;
+        height: 55px;
+        font-size: 2rem;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-md);
+        transform: rotate(0deg);
+    }
+
+        .close-modal:hover {
+            transform: scale(1.1) rotate(180deg);
+            background: var(--orange-secondary);
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 992px) {
+        .hero-title {
+            font-size: 2.8rem;
+        }
+
+        .content-section {
+            padding: 40px 30px;
+        }
+
+        .image-section {
+            padding: 40px 30px;
+            min-height: 400px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .hero-section {
+            padding: 60px 0 80px;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+
+        .content-section {
+            padding: 30px 20px;
+        }
+
+        .image-section {
+            padding: 30px 20px;
+            min-height: 300px;
+        }
+
+        .content-title {
+            font-size: 1.8rem;
+        }
+
+        .content-description {
+            font-size: 1rem;
+        }
+
+        .image-decoration {
+            display: none;
+        }
+
+        .close-modal {
+            top: -60px;
+            right: 0;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .hero-title {
+            font-size: 1.8rem;
+        }
+
+        .content-container {
+            margin: -30px auto 60px;
+        }
+    }
+
+    /* Animation utilities */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Scroll animations */
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+</style>
+
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-subtitle">Özel Kampanya</div>
+            <h1 class="hero-title">@Model.Name</h1>
+        </div>
+    </div>
+</section>
+
+<div class="content-container">
+    <div class="campaign-card animate-on-scroll">
+        <div class="row g-0">
+            <div class="col-lg-6">
+                <div class="image-section">
+                    <div class="image-decoration"></div>
+                    <div class="image-decoration"></div>
+                    <div class="image-decoration"></div>
+                    <img src="/Img/@Model.Image" alt="@Model.Name" class="campaign-image" id="campaignImage" />
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="content-section">
+                    <div class="content-header">
+                        @* <div class="content-meta">Kampanya Detayları</div> *@
+                        <h2 class="content-title">Kampanya Detayları</h2>
+                    </div>
+                    <div class="content-description">
+                        @Html.Raw(Model.Description)
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<div class="image-modal" id="imageModal">
+    <div class="modal-content">
+        <button class="close-modal" id="closeModal">×</button>
+        <img src="/Img/@Model.Image" alt="@Model.Name" class="modal-image" />
+    </div>
+</div>
+
+<script>
+    // Scroll animation
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Interactive hover effects and modal functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const campaignImage = document.getElementById('campaignImage');
+        const imageModal = document.getElementById('imageModal');
+        const closeModal = document.getElementById('closeModal');
+
+        function openModal() {
+            imageModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModalFunc() {
+            imageModal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        campaignImage.addEventListener('click', openModal);
+        closeModal.addEventListener('click', closeModalFunc);
+
+        imageModal.addEventListener('click', function(e) {
+            if (e.target === imageModal) {
+                closeModalFunc();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && imageModal.classList.contains('show')) {
+                closeModalFunc();
+            }
+        });
+    });
+</script>

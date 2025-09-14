@@ -1,0 +1,117 @@
+﻿@model IEnumerable<Eticaret.Core.Entities.Category>
+
+@{
+    ViewData["Title"] = "Tüm Kategoriler";
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - SendeAl</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+    /*     .category-header { */
+    /*     background: linear-gradient(135deg, var(--white), var(--light-orange)); */
+    /*     border-bottom: 3px solid var(--primary-orange); */
+    /*     padding: 30px 0; */
+    /*     margin-bottom: 30px; */
+    /*     text-align: center; */
+    /*     box-shadow: 0 2px 15px rgba(255,107,53,0.1); */
+    /* } */
+
+    /*     .category-header h1 { */
+    /*         font-size: 2.5rem; */
+    /*         font-weight: 700; */
+    /*         color: var(--text-dark); */
+    /*     } */
+        .category-card-redesigned {
+            background: white;
+            border-radius: 12px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .category-card-redesigned:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 20px rgba(255,107,53,0.15);
+            }
+
+        .category-icon-redesigned {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--light-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--primary-orange);
+            flex-shrink: 0;
+            margin-right: 12px;
+            object-fit: cover;
+        }
+
+        .category-name-redesigned {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .category-arrow-redesigned {
+            opacity: 0;
+            transition: all 0.3s;
+            font-size: 1rem;
+            color: var(--primary-orange);
+        }
+
+        .category-card-redesigned:hover .category-arrow-redesigned {
+            opacity: 1;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4 mb-5">
+        <h1 class="mb-4 text-center text-dark">Tüm Ürün Kategorileri</h1>
+        <hr />
+        <div class="row g-3">
+            @foreach (var cat in Model)
+            {
+                <div class="col-6 col-md-4 col-lg-3">
+                    <a asp-controller="Categories" asp-action="Index" asp-route-id="@cat.Id"
+                       class="category-card-redesigned d-flex align-items-center p-3 text-decoration-none">
+                        @if (!string.IsNullOrEmpty(cat.Image))
+                        {
+                            <img src="/Img/Categories/@cat.Image"
+                                 alt="@cat.Name"
+                                 class="category-icon-redesigned" />
+                        }
+                        else
+                        {
+                            <div class="category-icon-redesigned">
+                                <i class="bi bi-folder"></i>
+                            </div>
+                        }
+                        <div class="flex-grow-1">
+                            <span class="category-name-redesigned">@cat.Name</span>
+                            @if (!string.IsNullOrEmpty(cat.Description))
+                            {
+                                <p class="text-muted small mb-0">@cat.Description</p>
+                            }
+                        </div>
+                        <div class="category-arrow-redesigned">
+                            <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

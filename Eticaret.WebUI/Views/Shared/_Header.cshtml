@@ -595,7 +595,7 @@
                                     @await Component.InvokeAsync("Categories")
                                 </div>
                                 <div class="categories-footer-redesigned">
-                                    <a href="/categories" class="all-categories-btn-redesigned">
+                                    <a href="/categories/list" class="all-categories-btn-redesigned">
                                         <i class="bi bi-grid btn-icon-redesigned"></i>
                                         <span>Tüm Kategorileri Keşfet</span>
                                         <i class="bi bi-arrow-right"></i>
@@ -717,7 +717,7 @@
                         }
 
                         <!-- Contact -->
-                        <a asp-controller="Home" asp-action="ContactUs" class="nav-item-custom">
+                        <a href="/Account/Contact" class="nav-item-custom">
                             <span class="icon">
                                 <i class="bi bi-envelope"></i>
                             </span>
@@ -761,7 +761,7 @@
                                 <span>(@cart.CartLines.Count)</span>
                             }
                         </a>
-                        <a asp-controller="Home" asp-action="ContactUs" class="mobile-nav-item">
+                        <a href="/Account/Contact" class="mobile-nav-item">
                             <i class="bi bi-envelope me-2"></i> İletişim
                         </a>
                     </div>

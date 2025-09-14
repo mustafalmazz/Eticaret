@@ -2,9 +2,27 @@
 @{
     ViewData["Title"] = Model.Name;
 }
+<style>
+    .category-header {
+        background: linear-gradient(135deg, var(--white), var(--light-orange));
+        border-bottom: 3px solid var(--primary-orange);
+        padding: 30px 0;
+        margin-bottom: 30px;
+        text-align: center;
+        box-shadow: 0 2px 15px rgba(255,107,53,0.1);
+    }
 
-<div class="my-5">
-    <h1 class="text-center">@Model.Name</h1>
+        .category-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+</style>
+
+<div class="my-1">
+    <div class="category-header">
+        <h1>@Model.Name</h1>
+    </div>
     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
         @foreach (var item in Model.Products)
         {

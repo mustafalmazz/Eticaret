@@ -29,5 +29,13 @@ namespace Eticaret.WebUI.Controllers
 
             return View(category);
         }
+        public async Task<IActionResult> List()
+        {
+            var categories = await _service.GetQueryable()
+                                           .Where(c => c.IsActive)
+                                           .OrderBy(c => c.OrderNo)
+                                           .ToListAsync();
+            return View(categories);
+        }
     }
 }
