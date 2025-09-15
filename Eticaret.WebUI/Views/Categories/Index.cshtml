@@ -17,12 +17,37 @@
             font-weight: 700;
             color: var(--text-dark);
         }
+
+    .title-with-images {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 35px; 
+    }
+
+        .title-with-images h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+    .title-image {
+        height: 40px;
+        object-fit: contain;
+    }
+
 </style>
 
 <div class="my-1">
     <div class="category-header">
-        <h1>@Model.Name</h1>
+        <div class="title-with-images">
+            <img src="~/Img/Categories/@Model.Image" alt="Sol Resim" class="title-image" />
+            <h2>@Model.Name</h2>
+            <img src="~/Img/Categories/@Model.Image" alt="Sağ Resim" class="title-image" />
+        </div>
     </div>
+
     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
         @foreach (var item in Model.Products)
         {

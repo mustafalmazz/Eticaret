@@ -102,14 +102,10 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                     if (Image is not null)
                     {
                         category.Image = await FileHelper.FileLoaderAsync(Image,"/Img/Categories/");
-                        _context.Update(category);
-                        await _context.SaveChangesAsync();
                     }
-                    else
-                    {
+                    _context.Update(category);
+                    await _context.SaveChangesAsync();
 
-                    }
-                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {

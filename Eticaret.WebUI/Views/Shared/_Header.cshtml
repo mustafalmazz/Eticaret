@@ -694,7 +694,12 @@
                                     {
                                         <a href="/Products/Details/@item.Product.Id" class="dropdown-item-custom">
                                             <img src="/Img/Products/@item.Product.Image" alt="@item.Product.Name" class="me-2 rounded" style="width: 40px; height: 40px; object-fit: cover;">
-                                            @item.Product.Name
+                                            @(
+                                                item.Product.Name.Length > 24
+                                                ? item.Product.Name.Substring(0, 24) + "..."
+                                                : item.Product.Name
+                                                )
+
                                         </a>
                                     }
                                     <div class="text-center p-3">
