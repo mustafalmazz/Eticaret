@@ -1,9 +1,8 @@
-﻿@model IEnumerable<Eticaret.Core.Entities.Category>
-
+﻿@model IEnumerable<Category>
 @{
     ViewData["Title"] = "Tüm Kategoriler";
+    var topCategories = Model.Where(c => c.ParentId == 0 && c.IsActive).OrderBy(c => c.OrderNo).ToList();
 }
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -14,26 +13,16 @@
     <link href="~/css/site.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
-    /*     .category-header { */
-    /*     background: linear-gradient(135deg, var(--white), var(--light-orange)); */
-    /*     border-bottom: 3px solid var(--primary-orange); */
-    /*     padding: 30px 0; */
-    /*     margin-bottom: 30px; */
-    /*     text-align: center; */
-    /*     box-shadow: 0 2px 15px rgba(255,107,53,0.1); */
-    /* } */
-
-    /*     .category-header h1 { */
-    /*         font-size: 2.5rem; */
-    /*         font-weight: 700; */
-    /*         color: var(--text-dark); */
-    /*     } */
         .category-card-redesigned {
             background: white;
             border-radius: 12px;
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            gap: 12px;
         }
 
             .category-card-redesigned:hover {
@@ -52,7 +41,6 @@
             font-size: 1.2rem;
             color: var(--primary-orange);
             flex-shrink: 0;
-            margin-right: 12px;
             object-fit: cover;
         }
 
@@ -60,18 +48,62 @@
             font-weight: 600;
             color: var(--text-dark);
         }
+        /* Alt kategori alanı */
+        .subcategory-list {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.35s ease;
+            margin-left: 52px; /* İkon ve paddinge göre kaydır */
+            padding-left: 10px;
+            border-left: 2px solid var(--light-orange);
+        }
 
-        .category-arrow-redesigned {
-            opacity: 0;
-            transition: all 0.3s;
-            font-size: 1rem;
+            .subcategory-list.show {
+                max-height: 500px; /* Yeterince büyük değer */
+            }
+
+        .subcategory-item {
+            background: #f9f9f9;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .subcategory-item:hover {
+                background: #ffe8d1;
+            }
+
+        .subcategory-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: var(--light-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: var(--primary-orange);
+            font-size: 1rem;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+        /* Ok ikon butonu */
+        .expand-icon {
+            margin-left: auto;
+            font-size: 1.3rem;
+            color: var(--primary-orange);
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
         }
 
-        .category-card-redesigned:hover .category-arrow-redesigned {
-            opacity: 1;
-            transform: translateX(4px);
-        }
+            .expand-icon.rotate {
+                transform: rotate(180deg);
+            }
     </style>
 </head>
 <body>
@@ -79,39 +111,119 @@
         <h1 class="mb-4 text-center text-dark">Tüm Ürün Kategorileri</h1>
         <hr />
         <div class="row g-3">
-            @foreach (var cat in Model)
+            @foreach (var category in topCategories)
             {
-                <div class="col-6 col-md-4 col-lg-3">
-                    <a asp-controller="Categories" asp-action="Index" asp-route-id="@cat.Id"
-                       class="category-card-redesigned d-flex align-items-center p-3 text-decoration-none">
-                        @if (!string.IsNullOrEmpty(cat.Image))
+                var subcategories = Model.Where(c => c.ParentId == category.Id && c.IsActive).OrderBy(c => c.OrderNo).ToList();
+                <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                    <div class="category-card-redesigned">
+                        @* Ana kategoriye link *@
+                        <a href="@Url.Action("Index", "Categories", new { id = category.Id })"
+                           class="d-flex align-items-center text-decoration-none flex-grow-1 text-dark">
+                            @if (!string.IsNullOrEmpty(category.Image))
+                            {
+                                <img src="/Img/Categories/@category.Image" alt="@category.Name" class="category-icon-redesigned" />
+                            }
+                            else
+                            {
+                                <div class="category-icon-redesigned">
+                                    <i class="bi bi-folder"></i>
+                                </div>
+                            }
+                            <div>
+                                <span class="category-name-redesigned">@category.Name</span>
+                                @if (!string.IsNullOrEmpty(category.Description))
+                                {
+                                    <p class="text-muted small mb-0">@category.Description</p>
+                                }
+                            </div>
+                        </a>
+                        @* Alt kategori varsa ikon göster *@
+                        @if (subcategories.Any())
                         {
-                            <img src="/Img/Categories/@cat.Image"
-                                 alt="@cat.Name"
-                                 class="category-icon-redesigned" />
-                        }
-                        else
-                        {
-                            <div class="category-icon-redesigned">
-                                <i class="bi bi-folder"></i>
+                            <div class="expand-icon" onclick="event.preventDefault(); event.stopPropagation(); toggleSubcategories('top-@category.Id', this, 'top-')">
+                                <i class="bi bi-chevron-down"></i>
                             </div>
                         }
-                        <div class="flex-grow-1">
-                            <span class="category-name-redesigned">@cat.Name</span>
-                            @if (!string.IsNullOrEmpty(cat.Description))
-                            {
-                                <p class="text-muted small mb-0">@cat.Description</p>
-                            }
-                        </div>
-                        <div class="category-arrow-redesigned">
-                            <i class="bi bi-arrow-right"></i>
-                        </div>
-                    </a>
+                    </div>
+                    @* Alt kategoriler dropdown animasyonlu *@
+                    <div id="subcategories-top-@category.Id" class="subcategory-list" aria-expanded="false">
+                        @foreach (var subcat in subcategories)
+                        {
+                            var subSubcategories = Model.Where(c => c.ParentId == subcat.Id && c.IsActive).OrderBy(c => c.OrderNo).ToList();
+                            <div>
+                                <a href="@Url.Action("Index", "Categories", new { id = subcat.Id })" class="subcategory-item text-decoration-none text-dark d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(subcat.Image))
+                                    {
+                                        <img src="/Img/Categories/@subcat.Image" alt="@subcat.Name" class="subcategory-icon" />
+                                    }
+                                    else
+                                    {
+                                        <div class="subcategory-icon">
+                                            <i class="bi bi-folder"></i>
+                                        </div>
+                                    }
+                                    <span>@subcat.Name</span>
+                                    @* Alt alt kategori varsa ok ikonu ekle *@
+                                    @if (subSubcategories.Any())
+                                    {
+                                        <div class="expand-icon ms-auto" onclick="event.preventDefault(); event.stopPropagation(); toggleSubcategories('sub-@category.Id-@subcat.Id', this, 'sub-')">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    }
+                                </a>
+                                @if (subSubcategories.Any())
+                                {
+                                    <div id="subcategories-sub-@category.Id-@subcat.Id" class="subcategory-list" aria-expanded="false">
+                                        @foreach (var subSubcat in subSubcategories)
+                                        {
+                                            <a href="@Url.Action("Index", "Categories", new { id = subSubcat.Id })" class="subcategory-item text-decoration-none text-dark ms-4">
+                                                @if (!string.IsNullOrEmpty(subSubcat.Image))
+                                                {
+                                                    <img src="/Img/Categories/@subSubcat.Image" alt="@subSubcat.Name" class="subcategory-icon" />
+                                                }
+                                                else
+                                                {
+                                                    <div class="subcategory-icon">
+                                                        <i class="bi bi-folder"></i>
+                                                    </div>
+                                                }
+                                                <span>@subSubcat.Name</span>
+                                            </a>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
                 </div>
             }
         </div>
     </div>
-
     <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSubcategories(key, iconElement, level) {
+            var el = document.getElementById("subcategories-" + key);
+            if (!el) return;
+            const isOpen = el.classList.contains("show");
+            // Aynı seviyedeki diğer açık alt menüleri kapat ve ikon rotasyonlarını kaldır
+            document.querySelectorAll(".subcategory-list.show").forEach(function (subList) {
+                if(subList.id !== el.id && subList.id.startsWith("subcategories-" + level)) {
+                    subList.classList.remove("show");
+                    subList.setAttribute("aria-expanded", "false");
+                    var relatedIcon = subList.previousElementSibling.querySelector(".expand-icon i");
+                    if (relatedIcon) relatedIcon.classList.remove("rotate");
+                }
+            });
+            if(isOpen) {
+                el.classList.remove("show");
+                el.setAttribute("aria-expanded", "false");
+                iconElement.querySelector("i").classList.remove("rotate");
+            } else {
+                el.classList.add("show");
+                el.setAttribute("aria-expanded", "true");
+                iconElement.querySelector("i").classList.add("rotate");
+            }
+        }
+    </script>
 </body>
 </html>

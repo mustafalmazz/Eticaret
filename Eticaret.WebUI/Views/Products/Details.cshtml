@@ -40,7 +40,6 @@
             padding-top: 40px;
         }
 
-        /* Ana Resim Alanı - Tam Oturtma */
         .product-image-area {
             height: 420px;
             border-radius: 20px;
@@ -52,7 +51,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px; /* İç boşluk ekle */
+            padding: 20px;
         }
 
             .product-image-area:hover {
@@ -65,7 +64,7 @@
             max-height: 100%;
             width: auto;
             height: auto;
-            object-fit: contain; /* Kırpılmadan tam sığdır */
+            object-fit: contain;
             object-position: center;
             transition: all 0.4s ease;
             border-radius: 15px;
@@ -117,16 +116,47 @@
         .action-buttons-group {
             display: flex;
             gap: 12px;
+            flex-wrap: wrap;
         }
 
-        .quantity-input {
-            width: 65px;
-            height: 40px;
+        /* Yeni modern miktar selector */
+        .quantity-selector {
+            display: flex;
+            align-items: center;
             border: 1.5px solid var(--border-light);
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 600;
+            border-radius: 12px;
+            overflow: hidden;
+            width: 120px;
+            background: #fff;
         }
+
+            .quantity-selector input {
+                text-align: center;
+                border: none;
+                width: 50%;
+                font-weight: 600;
+                font-size: 1rem;
+                color: var(--text-dark);
+                outline: none;
+                background: transparent;
+            }
+
+        .qty-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            background: var(--light-bg);
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-orange);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .qty-btn:hover {
+                background: var(--primary-orange);
+                color: white;
+            }
 
         .cta-button {
             background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
@@ -162,12 +192,23 @@
             padding-top: 60px;
             border-radius: 30px 30px 0 0;
             margin-top: -20px;
+            text-align: center;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 700;
+            color: var(--text-dark);
         }
 
         .related-products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            display: inline-flex;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            justify-items: center;
         }
 
         .product-card {
@@ -184,15 +225,14 @@
                 transform: translateY(-5px);
             }
 
-        /* İlişkili Ürünler İçin de Aynı Contain Stili */
         .card-image-container {
-            height: 180px;
+            height: 270px;
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 15px; /* İç boşluk */
+            padding: 15px;
         }
 
         .product-image-small {
@@ -200,7 +240,7 @@
             max-height: 100%;
             width: auto;
             height: auto;
-            object-fit: contain; /* İlişkili ürünler için de contain */
+            object-fit: contain;
             object-position: center;
             transition: transform 0.3s ease;
             border-radius: 8px;
@@ -209,6 +249,37 @@
         .product-card:hover .product-image-small {
             transform: scale(1.08);
         }
+
+        .favorite-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+            .favorite-btn:hover {
+                background: var(--primary-orange);
+                color: white;
+                transform: scale(1.1);
+            }
+
+            .favorite-btn.favorited {
+                background: var(--primary-orange);
+                color: white;
+            }
 
         .card-content {
             padding: 12px;
@@ -257,7 +328,33 @@
             background: white;
             color: var(--text-dark);
             border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
+
+            .btn-view-related::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(244, 127, 32, 0.1), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .btn-view-related:hover::before {
+                left: 100%;
+            }
+
+            .btn-view-related:hover {
+                background: var(--primary-orange);
+                color: white;
+                border-color: var(--primary-orange);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(244, 127, 32, 0.3);
+            }
 
         @@media (max-width: 768px) {
             .product-grid-layout
@@ -268,14 +365,14 @@
 
         .product-image-area {
             height: 320px;
-            padding: 15px; /* Mobilde padding küçült */
+            padding: 15px;
         }
 
         .action-buttons-group {
             flex-direction: column;
         }
 
-        .cta-button, .favorite-button, .quantity-input {
+        .cta-button, .favorite-button, .quantity-selector {
             width: 100%;
         }
 
@@ -327,11 +424,15 @@
                     <div class="product-price">
                         <span>@Model.Product.Price.ToString("c")</span>
                     </div>
-                    
+
                     <div class="action-buttons-group">
                         <form asp-action="Add" asp-controller="Cart" style="display: flex; gap: 15px; align-items: center;">
                             <input type="hidden" value="@Model.Product.Id" name="id" />
-                            <input class="quantity-input" id="inputQuantity" name="quantity" type="number" value="1" min="1" max="99">
+                            <div class="quantity-selector">
+                                <button type="button" class="qty-btn" id="decreaseQty">−</button>
+                                <input type="text" id="inputQuantity" name="quantity" value="1" min="1" max="99" readonly>
+                                <button type="button" class="qty-btn" id="increaseQty">+</button>
+                            </div>
                             <button class="cta-button" type="submit">
                                 <i class="bi-cart me-2"></i>
                                 Sepete Ekle
@@ -358,12 +459,18 @@
                     <div class="product-card">
                         <div class="card-image-container">
                             <img src="/Img/Products/@item.Image" alt="@item.Name" class="product-image-small">
+                            <form asp-action="Add" asp-controller="Favorites" class="favorite-form">
+                                <input type="hidden" value="@item.Id" name="ProductId" />
+                                <button type="submit" class="favorite-btn" title="Favorilere Ekle">
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                            </form>
                         </div>
                         <div class="card-content">
                             <h5 class="card-title">@item.Name</h5>
                             <p class="card-price">@item.Price.ToString("c")</p>
                             <div class="card-buttons">
-                                <a href="@Url.Action("Details", "Product", new { id = item.Id })" class="btn-related btn-view-related">
+                                <a href="/Products/Details/@item.Id" class="btn-related btn-view-related">
                                     <i class="bi bi-eye"></i>
                                     <span>Görüntüle</span>
                                 </a>
@@ -406,6 +513,7 @@
                 }
             });
         });
+
         // İlişkili ürün butonları
         document.querySelectorAll('.btn-cart-related').forEach(button => {
             button.addEventListener('click', function(e) {
@@ -417,6 +525,7 @@
                 }, 600);
             });
         });
+
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('img').forEach(img => {
                 img.setAttribute('loading', 'lazy');
@@ -441,14 +550,17 @@
                 observer.observe(card);
             });
         });
-        // Miktar input validasyonu
-        const quantityInput = document.getElementById('inputQuantity');
-        if (quantityInput) {
-            quantityInput.addEventListener('change', function() {
-                if (this.value < 1) this.value = 1;
-                if (this.value > 99) this.value = 99;
-            });
-        }
+
+        // Yeni modern miktar input JS
+        const qtyInput = document.getElementById('inputQuantity');
+        document.getElementById('increaseQty').addEventListener('click', () => {
+            let val = parseInt(qtyInput.value);
+            if (val < 99) qtyInput.value = val + 1;
+        });
+        document.getElementById('decreaseQty').addEventListener('click', () => {
+            let val = parseInt(qtyInput.value);
+            if (val > 1) qtyInput.value = val - 1;
+        });
     </script>
 </body>
 </html>
