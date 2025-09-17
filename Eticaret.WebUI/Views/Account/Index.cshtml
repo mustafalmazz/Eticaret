@@ -4,43 +4,154 @@
     ViewData["Title"] = "Hesabım";
 }
 
+<style>
+    :root {
+        --orange-primary: #ff5722;
+        --orange-secondary: #ff7043;
+        --orange-light: #fff3e0;
+        --orange-dark: #e64a19;
+        --orange-subtle: rgba(255, 87, 34, 0.1);
+        --text-primary: #1e1e1e;
+        --text-dark: #333333;
+        --white: #ffffff;
+    }
 
-<div class="row">
-    <div class="col-md-4">
-        <h3>Hesap Bilgilerim</h3>
-        <hr />
-        <form asp-action="Index">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SurName" class="control-label"></label>
-                <input asp-for="SurName" class="form-control" />
-                <span asp-validation-for="SurName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" type="password"/>
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-2">
-                <input type="submit" value="Kaydet" class="btn btn-primary " />
-            </div>
-        </form>
+    .category-hero {
+        background: var(--orange-primary);
+        padding: 50px 0 40px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 0 0 50px 50px;
+        box-shadow: 0 10px 30px rgba(255, 87, 34, 0.2);
+        text-align: center;
+        color: var(--white);
+    }
+
+        .category-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.75"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: slideGrid 20s linear infinite;
+            z-index: 0;
+        }
+
+    @@keyframes slideGrid {
+        0% {
+            transform: translateX(0) translateY(0);
+        }
+
+        100% {
+            transform: translateX(10px) translateY(10px);
+        }
+    }
+
+    .category-hero-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 50px;
+        flex-wrap: wrap;
+    }
+
+    .category-hero-title {
+        font-size: 3rem;
+        font-weight: 800;
+        margin: 0;
+        color: var(--white);
+        text-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    /* Form Stilleri */
+    .form-container {
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        background-color: var(--white);
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: var(--orange-primary);
+            box-shadow: 0 0 0 0.2rem var(--orange-subtle);
+        }
+
+    .btn-primary {
+        background: linear-gradient(45deg, var(--orange-primary), var(--orange-secondary));
+        border: none;
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, var(--orange-dark), var(--orange-primary));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 87, 34, 0.3);
+        }
+</style>
+
+<div class="category-hero mb-5">
+    <div class="container category-hero-content py-2">
+        <h1 class="category-hero-title">Hesap Bilgilerim</h1>
     </div>
 </div>
 
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="form-container">
+                <form asp-action="Index">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="control-label ms-3"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="SurName" class="control-label ms-3"></label>
+                        <input asp-for="SurName" class="form-control" />
+                        <span asp-validation-for="SurName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Email" class="control-label ms-3"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Phone" class="control-label ms-3"></label>
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Password" class="control-label ms-3"></label>
+                        <input asp-for="Password" class="form-control" type="password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mt-4">
+                        <input type="submit" value="Kaydet" class="btn btn-primary w-100" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
