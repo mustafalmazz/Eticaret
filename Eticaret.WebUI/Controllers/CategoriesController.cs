@@ -13,6 +13,7 @@ namespace Eticaret.WebUI.Controllers
         {
             _service = service;
         }
+
         public async Task<IActionResult> Index(int? id)
         {
             if (id == null)
@@ -20,15 +21,30 @@ namespace Eticaret.WebUI.Controllers
                 return NotFound();
             }
 
-            var category = await _service.GetQueryable().Include(p=>p.Products)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            // Seçilen kategori
+            var category = await _service.GetQueryable()
+                                         .Include(c => c.Products)
+                                         .FirstOrDefaultAsync(c => c.Id == id);
+
             if (category == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            // Alt kategorilerin hepsini bul
+            var allCategoryIds = await GetAllSubCategoryIdsAsync(id.Value);
+            allCategoryIds.Add(id.Value); // üst kategoriyi de ekle
+
+            // Tüm ürünleri topla
+            var products = await _service.GetQueryable()
+                                         .Where(c => allCategoryIds.Contains(c.Id))
+                                         .SelectMany(c => c.Products)
+                                         .ToListAsync();
+
+            ViewBag.Category = category; // kategori bilgisini gönderdim
+            return View(products);       // ürün listesi döndürülüyor
         }
+
         public async Task<IActionResult> List()
         {
             var categories = await _service.GetQueryable()
@@ -36,6 +52,23 @@ namespace Eticaret.WebUI.Controllers
                                            .OrderBy(c => c.OrderNo)
                                            .ToListAsync();
             return View(categories);
+        }
+
+        // 🔽 Alt kategori id’lerini recursive bulan yardımcı fonksiyon
+        private async Task<List<int>> GetAllSubCategoryIdsAsync(int categoryId)
+        {
+            var subcategories = await _service.GetQueryable()
+                                              .Where(c => c.ParentId == categoryId && c.IsActive)
+                                              .ToListAsync();
+
+            var ids = new List<int>();
+            foreach (var sub in subcategories)
+            {
+                ids.Add(sub.Id);
+                ids.AddRange(await GetAllSubCategoryIdsAsync(sub.Id));
+            }
+
+            return ids;
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿@model Category
+﻿@model IEnumerable<Product>
 
 @{
-
-    ViewData["Title"] = Model.Name;
-
+    var category = ViewBag.Category as Category;
+    ViewData["Title"] = category?.Name ?? "Kategori";
 }
 
 <style>
@@ -18,6 +17,33 @@
         --white: #ffffff;
     }
 
+    .no-products-message {
+        padding: 40px 20px;
+        background-color: #f8f9fa; /* Hafif gri arka plan */
+        border-radius: 12px;
+        border: 1px solid #e9ecef; /* Hafif kenarlık */
+        color: #6c757d; /* Yumuşak gri metin rengi */
+        text-align: center;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Hafif gölge */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
+        .no-products-message .icon {
+            font-size: 3rem;
+            color: #adb5bd; /* İkon için daha açık gri */
+        }
+
+        .no-products-message p {
+            margin: 0;
+            font-weight: 500;
+        }
+    
     .category-hero {
         background: var(--orange-primary);
         padding: 50px 0 40px;
@@ -42,16 +68,12 @@
         }
 
     @@keyframes slideGrid {
-        0%
-
-    {
-        transform: translateX(0) translateY(0);
-    }
-
-    100% {
-        transform: translateX(10px) translateY(10px);
-    }
-
+        0% {
+            transform: translateX(0) translateY(0);
+        }
+        100% {
+            transform: translateX(10px) translateY(10px);
+        }
     }
 
     .category-hero-content {
@@ -76,22 +98,38 @@
         color: var(--white);
         text-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
-
 </style>
 
 <div class="category-hero mb-5">
     <div class="container category-hero-content py-2">
-        <img src="~/Img/Categories/@Model.Image" alt="Sol Resim" />
-        <h1 class="category-hero-title">@Model.Name</h1>
-        <img src="~/Img/Categories/@Model.Image" alt="Sağ Resim" />
+        @if (!string.IsNullOrEmpty(category?.Image))
+        {
+            <img src="~/Img/Categories/@category.Image" alt="@category.Name" />
+        }
+        <h1 class="category-hero-title">@category?.Name</h1>
+        @if (!string.IsNullOrEmpty(category?.Image))
+        {
+            <img src="~/Img/Categories/@category.Image" alt="@category.Name" />
+        }
     </div>
 </div>
 
 <div class="my-1 container">
     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-        @foreach (var item in Model.Products)
+        @if (Model != null && Model.Any())
         {
-            <partial name="_ProductView" model="item" />
+            foreach (var item in Model)
+            {
+                <partial name="_ProductView" model="item" />
+            }
+        }
+        else
+        {
+            <div class="no-products-message">
+                <i class="bi bi-box-seam icon"></i>
+                <p>Bu kategoride henüz ürün bulunmamaktadır.</p>
+                <p class="small text-muted">Yakında yeni ürünler eklenecektir. Lütfen daha sonra tekrar kontrol edin.</p>
+            </div>
         }
     </div>
 </div>

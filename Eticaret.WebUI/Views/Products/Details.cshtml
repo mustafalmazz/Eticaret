@@ -19,11 +19,12 @@
             --shadow-light: rgba(0, 0, 0, 0.05);
             --shadow-medium: rgba(0, 0, 0, 0.08);
             --shadow: rgba(255, 107, 53, 0.15);
+            --bg-body: #f8f9fa;
         }
 
         body {
             font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--light-bg);
+            background: var(--bg-body);
             color: var(--text-dark);
         }
 
@@ -50,15 +51,17 @@
                 animation: slideGrid 20s linear infinite;
                 z-index: 0;
             }
-
         @@keyframes slideGrid {
-            0% {
-                transform: translateX(0) translateY(0);
-            }
+            0%
 
-            100% {
-                transform: translateX(10px) translateY(10px);
-            }
+        {
+            transform: translateX(0) translateY(0);
+        }
+
+        100% {
+            transform: translateX(10px) translateY(10px);
+        }
+
         }
 
         .category-hero-content {
@@ -81,9 +84,12 @@
         /* Yeni Başlık CSS'i Bitişi */
 
         .main-product-section {
-            background: linear-gradient(135deg, var(--white) 0%, var(--cream-bg) 100%);
-            border-radius: 0 0 30px 30px;
+            background: var(--white);
+            border-radius: 20px;
             box-shadow: 0 6px 20px var(--shadow-medium);
+            margin-top: -60px;
+            position: relative;
+            z-index: 1;
         }
 
         .product-grid-layout {
@@ -91,12 +97,11 @@
             grid-template-columns: 1.1fr 1fr;
             gap: 40px;
             align-items: center;
-            padding-top: 40px;
+            padding: 40px;
         }
 
         .product-image-area {
-            height: 420px;
-            /* border: 10px #e0701a solid; */
+            height: 500px;
             border-radius: 20px;
             box-shadow: 0 10px 25px var(--shadow-medium);
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
@@ -161,11 +166,24 @@
             color: var(--text-light);
             font-size: 0.95rem;
             line-height: 1.5;
-            -webkit-line-clamp: 4;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            max-height: 140px;
+            overflow-y: auto;
+            padding-right: 5px;
+            white-space: normal;
         }
+
+            .product-description::-webkit-scrollbar {
+                width: 12px;
+            }
+
+            .product-description::-webkit-scrollbar-thumb {
+                background-color: rgba(255,107,53,0.5);
+                border-radius: 3px;
+            }
+
+            .product-description::-webkit-scrollbar-track {
+                background-color: rgba(0,0,0,0.05);
+            }
 
         .action-buttons-group {
             display: flex;
@@ -239,234 +257,166 @@
                 color: white;
             }
 
-        /* --- Yeni Kart Tasarımı CSS'i Başlangıcı --- */
+        /* --- Yeni İlişkili Ürünler Bölümü CSS'i Başlangıcı --- */
         .related-products-section {
             padding-top: 60px;
             padding-bottom: 60px;
+            background: var(--bg-body);
+        }
+
+        .section-heading {
+            font-weight: 700;
+            font-size: 2rem;
+            color: var(--text-dark);
+            margin-bottom: 40px;
             text-align: center;
         }
-
-        .related-products-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .card {
+        /* Yeni Kart Tasarımı */
+        .product-card {
             border: none;
             border-radius: 20px;
             overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            background: white;
-            position: relative;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
-            .card:hover {
+            .product-card:hover {
                 transform: translateY(-8px);
                 box-shadow: 0 15px 40px var(--shadow);
             }
 
-            .card::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 4px;
-                background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            }
-
-            .card:hover::before {
-                opacity: 1;
-            }
-
-        /* Favori Badge Tasarımı */
-        .badge-fav {
-            background: rgba(255, 255, 255, 0.9) !important;
-            backdrop-filter: blur(10px);
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            top: 15px !important;
-            right: 15px !important;
-            z-index: 10 !important;
-            pointer-events: auto !important;
-        }
-
-            .badge-fav:hover {
-                background: var(--light-orange) !important;
-                border-color: var(--primary-orange);
-                transform: scale(1.1);
-            }
-
-        .btn-transparent-fav {
-            background: transparent !important;
-            border: none !important;
-            color: var(--text-light) !important;
-            font-size: 1.3rem !important;
-            transition: all 0.3s ease;
-            width: 100%;
-            height: 100%;
+        .product-card-image-wrapper {
+            position: relative;
+            height: 250px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            outline: none !important;
+            background: #f8f9fa;
         }
 
-            .btn-transparent-fav:hover {
-                color: var(--primary-orange) !important;
-            }
-
-        /* Ürün Resmi */
-        .card-img-product {
-            height: 280px;
-            transition: all 0.4s ease;
+        .product-card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
         }
 
-        .card:hover .card-img-product {
+        .product-card:hover .product-card-image {
             transform: scale(1.05);
         }
 
-        /* Kart Gövdesi */
-        .card-body {
-            padding: 25px 20px 20px;
-            text-align: center;
+        .product-card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
-        .fw-bolder {
-            font-weight: 700 !important;
+        .product-card:hover .product-card-overlay {
+            opacity: 1;
+        }
+
+        .product-card-actions {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .product-card:hover .product-card-actions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-orange);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+            .action-btn:hover {
+                transform: scale(1.1);
+                background: var(--primary-orange);
+                color: var(--white);
+            }
+
+        .product-card-body {
+            padding: 20px;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card-title {
             font-size: 1.1rem;
+            font-weight: 700;
             color: var(--text-dark);
-            margin-bottom: 15px;
-            line-height: 1.4;
-            height: 2.8em;
+            height: 3em; /* 2 satır başlık için */
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
         }
 
-        /* Fiyat Tasarımı */
-        .card-price-main {
-            color: var(--primary-orange) !important;
+        .product-card-price {
             font-size: 1.4rem;
             font-weight: 800;
-            display: block;
+            color: var(--primary-orange);
+            margin-top: 10px;
+        }
+        /* --- Yeni İlişkili Ürünler Bölümü CSS'i Sonu --- */
+
+        /* Responsive Tasarım */
+        @@media (max-width: 992px) {
+            .product-grid-layout
+
+        {
+            grid-template-columns: 1fr;
+            padding: 20px;
         }
 
-        /* Kart Alt Kısmı */
-        .card-footer {
-            padding: 0 20px 25px !important;
-            background: transparent !important;
-            border: none !important;
+        .main-product-section {
+            margin-top: -30px;
         }
 
-        /* Sepete Ekle Butonu */
-        .btn-add-cart {
-            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange)) !important;
-            border: none !important;
-            color: white !important;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
         }
-
-            .btn-add-cart::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-                transition: left 0.5s ease;
-            }
-
-            .btn-add-cart:hover::before {
-                left: 100%;
-            }
-
-            .btn-add-cart:hover {
-                background: linear-gradient(45deg, var(--dark-orange), var(--primary-orange)) !important;
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px var(--shadow);
-                color: white !important;
-            }
-
-            .btn-add-cart:active {
-                transform: translateY(0);
-            }
-
-        .bi-cart-fill {
-            margin-right: 8px;
-            font-size: 1rem;
-        }
-
-        /* Animasyon Efekti */
-        @@keyframes addedToCart {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(0.95);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .btn-add-cart.added {
-            animation: addedToCart 0.3s ease;
-        }
-        /* --- Yeni Kart Tasarımı CSS'i Sonu --- */
-
         @@media (max-width: 768px) {
-            .product-grid-layout {
-                grid-template-columns: 1fr;
-            }
+            .product-image-area
 
-            .product-image-area {
-                height: 320px;
-                padding: 15px;
-            }
+        {
+            height: 320px;
+        }
 
-            .action-buttons-group {
-                flex-direction: column;
-            }
+        .action-buttons-group {
+            flex-direction: column;
+        }
 
-            .cta-button, .favorite-button, .quantity-selector {
-                width: 100%;
-            }
+        .cta-button, .favorite-button, .quantity-selector {
+            width: 100%;
+        }
 
-            .related-products-grid {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .card-img-product {
-                height: 200px;
-            }
         }
     </style>
 </head>
@@ -484,7 +434,6 @@
         <div class="container px-4 px-lg-5">
             <div class="product-grid-layout">
                 <div class="product-image-area">
-                    @* Buraya slider veya tek resim gelecek *@
                     @if (Model.Product.ProductImages?.Count > 0)
                     {
                         <partial name="_ProductDetailSlider" model="Model.Product.ProductImages" />
@@ -527,48 +476,50 @@
         </div>
     </section>
 
-    <section class="related-products-section py-5">
-        <div class="container px-4 px-lg-5">
-            <h2 class="section-heading">İlişkili Ürünler</h2>
-            <div class="related-products-grid">
-                @foreach (var item in Model.RelatedProducts)
-                {
-                    <div class="col mb-4">
-                        <div class="card h-100">
-                            <div class="badge-fav position-absolute">
-                                <form asp-action="Add" asp-controller="Favorites">
-                                    <input type="hidden" value="@item.Id" name="ProductId" />
-                                    <button class="btn-transparent-fav" type="submit">
-                                        <i class="bi bi-heart"></i>
-                                    </button>
-                                </form>
-                            </div>
-                            <a href="/Products/Details/@item.Id">
-                                <img class="card-img-top card-img-product" src="/Img/Products/@item.Image" alt="@item.Name">
-                            </a>
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <h5 class="fw-bolder">@item.Name</h5>
-                                    <span class="card-price-main">@item.Price.ToString("c")</span>
-                                </div>
-                            </div>
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <form asp-action="Add" asp-controller="Cart">
-                                    <input type="hidden" value="@item.Id" name="id" />
-                                    <input type="hidden" value="1" name="quantity" />
-                                    <div class="text-center">
-                                        <button class="btn-add-cart" type="submit">
-                                            <i class="bi-cart-fill"></i>Sepete Ekle
-                                        </button>
+    @if (Model.RelatedProducts != null && Model.RelatedProducts.Any())
+    {
+        <section class="related-products-section">
+            <div class="container px-4 px-lg-5">
+                <h2 class="section-heading">İlişkili Ürünler</h2>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                    @foreach (var item in Model.RelatedProducts)
+                    {
+                        <div class="col">
+                            <div class="product-card">
+                                <a href="/Products/Details/@item.Id" class="text-decoration-none text-dark">
+                                    <div class="product-card-image-wrapper">
+                                        <img class="product-card-image" src="/Img/Products/@item.Image" alt="@item.Name">
+                                        <div class="product-card-overlay"></div>
+                                        <div class="product-card-actions">
+                                            <form asp-action="Add" asp-controller="Cart">
+                                                <input type="hidden" value="@item.Id" name="id" />
+                                                <input type="hidden" value="1" name="quantity" />
+                                                <button class="action-btn" type="submit" title="Sepete Ekle">
+                                                    <i class="bi bi-cart-fill"></i>
+                                                </button>
+                                            </form>
+                                            <form asp-action="Add" asp-controller="Favorites">
+                                                <input type="hidden" value="@item.Id" name="ProductId" />
+                                                <button class="action-btn" type="submit" title="Favorilere Ekle">
+                                                    <i class="bi bi-heart"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
-                                </form>
+                                    <div class="product-card-body">
+                                        <h5 class="product-card-title">@item.Name</h5>
+                                        <div class="product-card-price">
+                                            @item.Price.ToString("c")
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
                         </div>
-                    </div>
-                }
+                    }
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    }
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -591,44 +542,6 @@
                         if (this.closest('form')) this.closest('form').submit();
                     }, 600);
                 }
-            });
-        });
-
-        // İlişkili ürün butonları
-        document.querySelectorAll('.btn-add-cart').forEach(button => {
-            button.addEventListener('click', function(e) {
-                this.classList.add('added');
-                setTimeout(() => {
-                    this.classList.remove('added');
-                }, 300);
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('img').forEach(img => {
-                img.setAttribute('loading', 'lazy');
-            });
-
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                        entry.target.style.transition = 'all 0.6s ease-out';
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.col').forEach(card => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(40px)';
-                observer.observe(card);
             });
         });
 

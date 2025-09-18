@@ -1,69 +1,423 @@
-﻿@model LoginViewModel
-
-@{
+﻿@{
     ViewData["Title"] = "Giriş";
-    Layout = "_AccountLayout";
+    Layout = null;
 }
-<style>
-    html,
-    body {
-        height: 100%;
-    }
-
-    .form-signin {
-        max-width: 330px;
-        padding: 1rem;
-    }
-
-        .form-signin .form-floating:focus-within {
-            z-index: 2;
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .form-signin input[type="email"] {
-            margin-bottom: -1px;
-            border-bottom-right-radius: 0;
-            border-bottom-left-radius: 0;
+        body, html {
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
         }
 
-        .form-signin input[type="password"] {
-            margin-bottom: 10px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 25%, #ffa726 50%, #ffb74d 75%, #ffcc80 100%);
+            z-index: -2;
         }
-</style>
-<main class="form-signin w-100 m-auto shadow rounded my-5">
-    <form asp-action="SignIn">
-        <h1 class="h3 mb-3 fw-normal">Üye Girişi</h1>
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-floating">
-            <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="example@gmail.com" />
-            <label for="floatingInput">Email</label>
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
-        <div class="form-floating mt-1">
-            <input asp-for ="Password" type="password" id="floatingPassword" class="form-control" placeholder="Şifre">
-            <label for="floatingPassword">Password</label>
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
 
-        <div class="form-check text-start my-3">
-            <input asp-for="RememberMe" class="form-check-input" type="checkbox" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">Beni Hatırla</label>
-        </div>
-        <input type="hidden" asp-for="ReturnUrl" value="@Context.Request.Query["ReturnUrl"]"/>
-        <button class="btn btn-primary w-100 py-2" type="submit">Giriş Yap</button>
-    </form>
-    <div class="row">
-        <div class="col-12 my-2"> 
-            <a href="/Account/SignUp" class="btn btn-info w-100 py-2">Üye Ol</a>
-        </div>
-        <div class="col-12">
-            <a href="/Account/PasswordRenew" class="btn btn-warning w-100 py-2">Şifremi Unuttum</a>
+        .floating-icons {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .floating-icon {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 2rem;
+            animation: float 15s infinite linear;
+            opacity: 0;
+        }
+
+            .floating-icon:nth-child(odd) {
+                animation-direction: reverse;
+            }
+
+            .floating-icon.small {
+                font-size: 1.5rem;
+                animation-duration: 20s;
+            }
+
+            .floating-icon.large {
+                font-size: 3rem;
+                animation-duration: 12s;
+            }
+
+        @@keyframes float {
+            0% {
+                transform: translateY(120vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            5% {
+                opacity: 1;
+            }
+
+            95% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-120px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container-fluid {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.3);
+            padding: 3rem;
+            max-width: 450px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .login-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 5px;
+                background: linear-gradient(90deg, #ff6b35, #ff8c42, #ffa726);
+            }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+            .login-header h1 {
+                color: #ff6b35;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                font-size: 2rem;
+            }
+
+            .login-header p {
+                color: #666;
+                margin: 0;
+            }
+
+        .form-floating {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+            .form-control:focus {
+                border-color: #ff8c42;
+                box-shadow: 0 0 0 0.25rem rgba(255, 140, 66, 0.25);
+                background: white;
+            }
+
+        .form-floating label {
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus + label,
+        .form-control:not(:placeholder-shown) + label {
+            color: #ff6b35;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #ff6b35, #ff8c42);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-login::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .btn-login:hover::before {
+                left: 100%;
+            }
+
+            .btn-login:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+            }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #17a2b8, #20c997);
+            border: none;
+            border-radius: 12px;
+            padding: 0.8rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+            .btn-secondary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(23, 162, 184, 0.4);
+                background: linear-gradient(135deg, #138496, #1e7e34);
+            }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+            border: none;
+            border-radius: 12px;
+            padding: 0.8rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+            .btn-warning:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
+                background: linear-gradient(135deg, #e0a800, #f57c00);
+                color: white;
+            }
+
+        .form-check-input:checked {
+            background-color: #ff8c42;
+            border-color: #ff8c42;
+        }
+
+        .form-check-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .alert {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 140, 66, 0.3);
+            border-radius: 12px;
+            color: #666;
+            margin-top: 2rem;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+            /* Responsive logo ayarı */
+            .logo-container img {
+                width: auto;
+                max-height: 80px; /* Sabit yükseklik, daha büyük ekranlar için */
+            }
+
+        @@media (max-width: 576px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+
+            .login-header h1 {
+                font-size: 1.7rem;
+            }
+            /* Mobil ekranlar için logo boyutu */
+            .logo-container img {
+                max-height: 45px; /* Mobil için daha küçük bir yükseklik */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+
+    <div class="floating-icons" id="floatingIconsContainer">
+    </div>
+
+    <div class="container-fluid">
+        <div class="login-card">
+            <div class="logo-container">
+                <img src="/Img/Logo/enyakınzoom3.png" height="80px" alt="Logo" />
+            </div>
+            <div class="login-header">
+                <h1>Üye Girişi</h1>
+            </div>
+
+            <form action="#" method="post">
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="floatingInput" name="Email" placeholder="example@gmail.com" required />
+                    <label for="floatingInput"><i class="fas fa-envelope me-2"></i>Email</label>
+                    <span class="text-danger"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input type="password" id="floatingPassword" class="form-control" name="Password" placeholder="Şifre" required>
+                    <label for="floatingPassword"><i class="fas fa-lock me-2"></i>Şifre</label>
+                    <span class="text-danger"></span>
+                </div>
+
+                <div class="form-check text-start my-3">
+                    <input class="form-check-input" type="checkbox" id="flexCheckDefault" name="RememberMe">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Beni Hatırla
+                    </label>
+                </div>
+
+                <button class="btn btn-login w-100 py-3 mb-3" type="submit">
+                    <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                </button>
+            </form>
+
+            <div class="row g-2">
+                <div class="col-12">
+                    <a href="/Account/SignUp" class="btn btn-secondary w-100 py-2">
+                        <i class="fas fa-user-plus me-2"></i>Yeni Üyelik
+                    </a>
+                </div>
+                <div class="col-12">
+                    <a href="/Account/PasswordRenew" class="btn btn-warning w-100 py-2">
+                        <i class="fas fa-key me-2"></i>Şifremi Unuttum
+                    </a>
+                </div>
+            </div>
+
+            <hr style="margin: 2rem 0; border-color: rgba(255, 107, 53, 0.2);">
+
+            <div class="alert alert-light text-center">
+                <i class="fas fa-info-circle me-2 text-warning"></i>
+                <strong>Sipariş oluşturmak, kampanyalardan yararlanmak ve siparişlerinizi takip etmek için lütfen giriş yapın.</strong>
+            </div>
         </div>
     </div>
-    
-</main>
-<hr />
-<p class="alert alert-light alert-dismissible fade show">
-    Sipariş oluşturmak , Kampanyalardan yararlanmak, Siparişinizi takip etmek için lütfen giriş yapın.
-</p>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form validasyonu için basit JavaScript
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const email = document.getElementById('floatingInput').value;
+            const password = document.getElementById('floatingPassword').value;
+
+            if (!email || !password) {
+                e.preventDefault();
+                alert('Lütfen tüm alanları doldurun!');
+            }
+        });
+
+        // Ürün ikonları
+        const productIcons = [
+            'fa-laptop', 'fa-mobile-alt', 'fa-headphones', 'fa-camera', 'fa-watch',
+            'fa-gamepad', 'fa-tv', 'fa-tshirt', 'fa-running', 'fa-book', 'fa-home',
+            'fa-car', 'fa-utensils', 'fa-coffee', 'fa-dumbbell', 'fa-bicycle',
+            'fa-paint-brush', 'fa-guitar', 'fa-globe', 'fa-glasses', 'fa-couch', 'fa-ring'
+        ];
+
+        // İlk ikonları oluştur
+        function createInitialIcons() {
+            const container = document.getElementById('floatingIconsContainer');
+
+            // 25 ikon oluştur ve rastgele konumlara yerleştir
+            for (let i = 0; i < 25; i++) {
+                const iconElement = document.createElement('i');
+                const randomIcon = productIcons[Math.floor(Math.random() * productIcons.length)];
+                const randomSize = Math.random();
+                let sizeClass = '';
+
+                if (randomSize < 0.3) sizeClass = 'small';
+                else if (randomSize > 0.7) sizeClass = 'large';
+
+                iconElement.className = `fas ${randomIcon} floating-icon ${sizeClass}`;
+                iconElement.style.left = Math.random() * 100 + '%';
+                iconElement.style.animationDelay = Math.random() * 15 + 's'; // 0-15 saniye arası rastgele başlangıç
+
+                container.appendChild(iconElement);
+            }
+        }
+
+        // Dinamik ikon ekleme
+        function addFloatingIcon() {
+            const container = document.getElementById('floatingIconsContainer');
+            const randomIcon = productIcons[Math.floor(Math.random() * productIcons.length)];
+            const iconElement = document.createElement('i');
+            const randomSize = Math.random();
+            let sizeClass = '';
+
+            if (randomSize < 0.3) sizeClass = 'small';
+            else if (randomSize > 0.7) sizeClass = 'large';
+
+            iconElement.className = `fas ${randomIcon} floating-icon ${sizeClass}`;
+            iconElement.style.left = Math.random() * 100 + '%';
+            iconElement.style.animationDelay = '0s';
+
+            container.appendChild(iconElement);
+
+            // İkonu animasyon süresi kadar sonra kaldır
+            const duration = sizeClass === 'small' ? 20000 : (sizeClass === 'large' ? 12000 : 15000);
+            setTimeout(() => {
+                if (iconElement.parentNode) {
+                    iconElement.remove();
+                }
+            }, duration);
+        }
+
+        // Sayfa yüklendiğinde ilk ikonları oluştur
+        window.addEventListener('load', function() {
+            createInitialIcons();
+
+            // Her 2 saniyede bir yeni ikon ekle
+            setInterval(addFloatingIcon, 2000);
+        });
+    </script>
+</body>
+</html>
