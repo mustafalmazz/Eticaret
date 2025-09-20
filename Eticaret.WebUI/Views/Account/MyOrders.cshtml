@@ -196,7 +196,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             display: inline-block;
-            white-space: nowrap; /* Metnin tek satırda kalmasını sağlar */
+            white-space: nowrap;
         }
 
             /* YENİ VE GÜNCELLENMİŞ DURUM SINIFLARI */
@@ -323,88 +323,6 @@
                 border: none;
             }
 
-        /* Responsive Tasarım */
-        @@media (max-width: 768px) {
-            .order-main-row td, .order-detail-table td, .order-detail-table th {
-                padding: 15px 10px;
-                font-size: 0.9rem;
-            }
-
-                .order-detail-table td img {
-                    width: 35px;
-                    height: 35px;
-                }
-
-            .display-4 {
-                font-size: 2rem;
-            }
-
-            .order-number,
-            .order-status,
-            .order-summary {
-                font-size: 0.8rem;
-                padding: 6px 12px;
-            }
-        }
-
-        @@media (max-width: 576px) {
-            .orders-container {
-                border-radius: 15px;
-            }
-
-            .order-main-row td {
-                padding: 15px 10px;
-            }
-
-            .order-detail-table td,
-            .order-detail-table th {
-                padding: 10px 8px;
-                font-size: 0.85rem;
-            }
-
-            .empty-orders {
-                padding: 40px 20px;
-            }
-        }
-
-        /* Animasyon Efektleri */
-        .order-card {
-            animation: slideInUp 0.6s ease forwards;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        @@keyframes slideInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .order-card:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .order-card:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .order-card:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        .order-card:nth-child(4) {
-            animation-delay: 0.4s;
-        }
-
-        .order-card:nth-child(5) {
-            animation-delay: 0.5s;
-        }
-
-        .order-card:nth-child(n+6) {
-            animation-delay: 0.6s;
-        }
-
         /* Genişletilmiş Durumda Detay Gösterimi */
         .order-details {
             max-height: 0;
@@ -436,6 +354,338 @@
             .toggle-details.expanded {
                 transform: rotate(180deg);
             }
+
+        /* Animasyon Efektleri */
+        .order-card {
+            animation: slideInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @@keyframes slideInUp {
+            to
+
+        {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .order-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .order-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .order-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .order-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .order-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .order-card:nth-child(n+6) {
+            animation-delay: 0.6s;
+        }
+
+        /* Responsive Tasarım */
+        @@media (max-width: 992px) {
+            .display-4
+
+        {
+            font-size: 2.5rem;
+        }
+
+        .orders-container {
+            border-radius: 15px;
+        }
+
+        }
+
+        @@media (max-width: 768px) {
+            /* Desktop tabloyu gizle, mobil kart görünümünü göster */
+            .desktop-table
+
+        {
+            display: none;
+        }
+
+        .mobile-orders {
+            display: block;
+        }
+
+        .display-4 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .orders-container {
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* Mobil sipariş kartları */
+        .mobile-order-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-light);
+            animation: slideInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .mobile-order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .mobile-order-number {
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .mobile-order-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .mobile-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .mobile-info-label {
+            color: var(--text-light);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .mobile-info-value {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .mobile-order-status {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .mobile-order-summary {
+            background: linear-gradient(45deg, var(--light-orange), #fef7f0);
+            padding: 8px 12px;
+            border-radius: 12px;
+            color: var(--dark-orange);
+            font-weight: 600;
+            font-size: 0.8rem;
+            border: 1px solid var(--secondary-orange);
+        }
+
+        .mobile-toggle-btn {
+            width: 100%;
+            background: var(--light-orange);
+            border: 1px solid var(--secondary-orange);
+            color: var(--primary-orange);
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+            .mobile-toggle-btn:hover {
+                background: var(--primary-orange);
+                color: white;
+            }
+
+        .mobile-order-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            margin-top: 15px;
+        }
+
+            .mobile-order-details.expanded {
+                max-height: 1000px;
+            }
+
+        .mobile-product-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+
+            .mobile-product-item:last-child {
+                margin-bottom: 0;
+            }
+
+        .mobile-product-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            object-fit: cover;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+
+        .mobile-product-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .mobile-product-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 3px;
+            line-height: 1.3;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .mobile-product-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            gap: 8px;
+        }
+
+        .mobile-product-price {
+            color: var(--primary-orange);
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .mobile-product-quantity {
+            background: var(--light-orange);
+            color: var(--primary-orange);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.7rem;
+        }
+
+        }
+
+        @@media (min-width: 769px) {
+            .mobile-orders
+
+        {
+            display: none;
+        }
+
+        .desktop-table {
+            display: block;
+        }
+
+        }
+
+        @@media (max-width: 576px) {
+            .display-4
+
+        {
+            font-size: 1.8rem;
+        }
+
+        .mobile-order-card {
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+
+        .mobile-order-info {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .mobile-order-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
+        }
+
+        .mobile-product-item {
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .mobile-product-img {
+            width: 45px;
+            height: 45px;
+        }
+
+        .empty-orders {
+            padding: 40px 20px;
+        }
+
+            .empty-orders::before {
+                font-size: 3rem;
+            }
+
+        }
+
+        @@media (max-width: 400px) {
+            .display-4
+
+        {
+            font-size: 1.6rem;
+        }
+
+        .mobile-order-card {
+            padding: 12px;
+        }
+
+        .mobile-product-item {
+            gap: 8px;
+            padding: 8px;
+        }
+
+        .mobile-product-img {
+            width: 40px;
+            height: 40px;
+        }
+
+        }
     </style>
 </head>
 <body>
@@ -446,7 +696,8 @@
 
         @if (Model != null && Model.Any())
         {
-            <div class="orders-container">
+            <!-- Desktop Table View -->
+            <div class="orders-container desktop-table">
                 <table class="table table-hover mb-0">
                     <thead class="main-table-header">
                         <tr>
@@ -567,6 +818,96 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Mobile Card View -->
+            <div class="mobile-orders">
+                @foreach (var item in Model)
+                {
+                    var orderState = item.OrderState;
+                    string statusClass = "";
+                    string iconClass = "";
+
+                    switch (orderState)
+                    {
+                        case EnumOrderState.Waiting:
+                            statusClass = "waiting";
+                            iconClass = "bi bi-hourglass-split";
+                            break;
+                        case EnumOrderState.Approved:
+                            statusClass = "approved";
+                            iconClass = "bi bi-check-circle";
+                            break;
+                        case EnumOrderState.Shipped:
+                            statusClass = "shipped";
+                            iconClass = "bi bi-truck";
+                            break;
+                        case EnumOrderState.Completed:
+                            statusClass = "completed";
+                            iconClass = "bi bi-bag-check";
+                            break;
+                        case EnumOrderState.Cancelled:
+                            statusClass = "cancelled";
+                            iconClass = "bi bi-x-circle";
+                            break;
+                        case EnumOrderState.Returned:
+                            statusClass = "returned";
+                            iconClass = "bi bi-arrow-return-left";
+                            break;
+                    }
+
+                    <div class="mobile-order-card">
+                        <div class="mobile-order-header">
+                            <span class="mobile-order-number">#@item.Id</span>
+                            <span class="order-status mobile-order-status @statusClass">
+                                <i class="@iconClass me-1"></i>
+                                @Html.DisplayFor(modelItem => item.OrderState)
+                            </span>
+                        </div>
+
+                        <div class="mobile-order-info">
+                            <div class="mobile-info-item">
+                                <span class="mobile-info-label">Toplam Tutar</span>
+                                <span class="mobile-info-value price-cell">₺@Html.DisplayFor(modelItem => item.TotalPrice)</span>
+                            </div>
+                            <div class="mobile-info-item">
+                                <span class="mobile-info-label">Sipariş Tarihi</span>
+                                <span class="mobile-info-value order-date">@Html.DisplayFor(modelItem => item.OrderDate)</span>
+                            </div>
+                            <div class="mobile-info-item">
+                                <span class="mobile-info-label">Ürün Sayısı</span>
+                                <span class="mobile-order-summary">
+                                    <i class="bi bi-bag-check me-1"></i>
+                                    @item.OrderLines.Count Ürün
+                                </span>
+                            </div>
+                        </div>
+
+                        <button class="mobile-toggle-btn" onclick="toggleMobileOrderDetails(this)">
+                            <i class="bi bi-chevron-down me-2"></i>
+                            Sipariş Detayları
+                        </button>
+
+                        <div class="mobile-order-details">
+                            @foreach (var item2 in item.OrderLines)
+                            {
+                                <div class="mobile-product-item">
+                                    <img src="/Img/Products/@item2.Product.Image" alt="@item2.Product.Name" class="mobile-product-img" />
+                                    <div class="mobile-product-info">
+                                        <a href="/Products/Details/@item2.Product.Id" class="mobile-product-name nav-link">
+                                            @item2.Product.Name
+                                        </a>
+                                        <div class="mobile-product-details">
+                                            <span class="mobile-product-price">@item2.UnitPrice.ToString("c")</span>
+                                            <span class="mobile-product-quantity">×@item2.Quantity</span>
+                                            <span class="mobile-product-price">@((item2.Quantity * item2.UnitPrice).ToString("c"))</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
         }
         else
         {
@@ -582,7 +923,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Sipariş detaylarını aç/kapat
+        // Desktop için sipariş detaylarını aç/kapat
         function toggleOrderDetails(button) {
             const detailsRow = button.closest('tr').nextElementSibling;
             const detailsContainer = detailsRow.querySelector('.order-details');
@@ -601,10 +942,31 @@
             }
         }
 
+        // Mobil için sipariş detaylarını aç/kapat
+        function toggleMobileOrderDetails(button) {
+            const detailsContainer = button.nextElementSibling;
+            const icon = button.querySelector('i');
+
+            if (detailsContainer.classList.contains('expanded')) {
+                detailsContainer.classList.remove('expanded');
+                icon.className = 'bi bi-chevron-down';
+                button.innerHTML = '<i class="bi bi-chevron-down me-2"></i>Sipariş Detayları';
+            } else {
+                detailsContainer.classList.add('expanded');
+                icon.className = 'bi bi-chevron-up';
+                button.innerHTML = '<i class="bi bi-chevron-up me-2"></i>Detayları Gizle';
+            }
+        }
+
         // Sayfa yüklendiğinde tüm detayları kapalı tut
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.order-details').forEach(function(details) {
+            document.querySelectorAll('.order-details, .mobile-order-details').forEach(function(details) {
                 details.classList.remove('expanded');
+            });
+
+            // Mobil kartlara animasyon delay'i ekle
+            document.querySelectorAll('.mobile-order-card').forEach(function(card, index) {
+                card.style.animationDelay = (index * 0.1) + 's';
             });
         });
 
