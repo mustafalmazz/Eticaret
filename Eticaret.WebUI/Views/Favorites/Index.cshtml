@@ -304,7 +304,7 @@
                                                 @item.Name
                                             </a>
                                         </td>
-                                        <td>@item.Price.ToString("c")</td>
+                                        <td>@item.Price.ToString("#,##0.00") ₺</td>
                                         <td>
                                             <form asp-action="Remove" asp-controller="Favorites">
                                                 <input type="hidden" name="ProductId" value="@item.Id" />

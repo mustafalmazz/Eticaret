@@ -3,7 +3,6 @@
     ViewData["Title"] = "Satın Al";
 }
 
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -428,47 +427,53 @@
 
         /* Responsive Tasarım */
         @@media (max-width: 768px) {
-            .checkout-card {
-                padding: 20px;
+            .checkout-card
+
+        {
+            padding: 20px;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px 8px;
+            font-size: 0.9rem;
+        }
+
+            .table td img {
+                width: 40px;
+                height: 40px;
             }
 
-            .table th,
-            .table td {
-                padding: 12px 8px;
-                font-size: 0.9rem;
-            }
+        .display-4 {
+            font-size: 2rem;
+        }
 
-                .table td img {
-                    width: 40px;
-                    height: 40px;
-                }
+        .order-summary {
+            position: static;
+            margin-top: 30px;
+        }
 
-            .display-4 {
-                font-size: 2rem;
-            }
-
-            .order-summary {
-                position: static;
-                margin-top: 30px;
-            }
         }
 
         @@media (max-width: 576px) {
-            .checkout-card {
-                padding: 15px;
-                border-radius: 15px;
-            }
+            .checkout-card
 
-            .table th,
-            .table td {
-                padding: 10px 6px;
-                font-size: 0.85rem;
-            }
+        {
+            padding: 15px;
+            border-radius: 15px;
+        }
 
-            .btn-success {
-                width: 100%;
-                margin-top: 20px;
-            }
+        .table th,
+        .table td {
+            padding: 10px 6px;
+            font-size: 0.85rem;
+        }
+
+        .btn-success {
+            width: 100%;
+            margin-top: 20px;
+        }
+
         }
 
         /* Animasyon Efektleri */
@@ -479,10 +484,13 @@
         }
 
         @@keyframes slideInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to
+
+        {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         }
 
         .checkout-card:nth-child(1) {
@@ -500,6 +508,12 @@
         .checkout-card:nth-child(4) {
             animation-delay: 0.4s;
         }
+
+        /* Para birimi gösterimi için sabit stil */
+        .price-display {
+            font-weight: 700;
+            color: var(--primary-orange);
+        }
     </style>
 </head>
 <body>
@@ -510,30 +524,6 @@
 
         @if (Model.CartProducts.Any())
         {
-            @if (ViewData["PaymentResult"] != null)
-            {
-                <div class="checkout-card">
-                    @if ((bool)ViewData["PaymentResult"])
-                    {
-                        <div class="alert alert-payment-success" role="alert">
-                            <h4 class="alert-heading">✅ Ödeme Başarılı!</h4>
-                            <p>Siparişiniz başarıyla alındı ve hazırlanmaya başlandı. En kısa sürede kargoya verilecektir.</p>
-                            <hr>
-                            <p class="mb-0">Desteğiniz için teşekkür ederiz.</p>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="alert alert-payment-danger" role="alert">
-                            <h4 class="alert-heading">❌ Ödeme Başarısız!</h4>
-                            <p>Ödeme işlemi tamamlanamadı. Lütfen kart bilgilerinizi kontrol edip tekrar deneyiniz.</p>
-                            <hr>
-                            <p class="mb-0">Sorun devam ederse, bankanızla iletişime geçebilirsiniz.</p>
-                        </div>
-                    }
-                </div>
-            }
-
             <div class="row">
                 <div class="col-lg-8">
                     <div class="checkout-card">
@@ -559,9 +549,9 @@
                                                     @item.Product.Name
                                                 </a>
                                             </td>
-                                            <td>@item.Product.Price.ToString("c")</td>
+                                            <td class="price-display">@item.Product.Price.ToString("#,##0.00") ₺</td>
                                             <td>@item.Quantity</td>
-                                            <td>@((item.Quantity * item.Product.Price).ToString("c"))</td>
+                                            <td class="price-display">@((item.Quantity * item.Product.Price).ToString("#,##0.00")) ₺</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -576,16 +566,16 @@
                         <table class="table">
                             <tr>
                                 <td>Ürün Toplamı</td>
-                                <td>@Model.TotalPrice.ToString("c")</td>
+                                <td class="price-display">@Model.TotalPrice.ToString("#,##0.00") ₺</td>
                             </tr>
                             <tr>
                                 <td>Kargo</td>
-                                <td>@(Model.TotalPrice > 999 ? "Ücretsiz" : Model.CartProducts.Any() ? "₺99" : "₺0")</td>
+                                <td class="price-display">@(Model.TotalPrice > 999 ? "Ücretsiz" : Model.CartProducts.Any() ? "99,00 ₺" : "0,00 ₺")</td>
                             </tr>
                             <tr class="">
                                 <th style="color:white; text-align:center;">Sipariş Toplamı</th>
-                                <td style="text-align:center;">
-                                    @(Model.TotalPrice > 999 ? Model.TotalPrice.ToString("c") : (Model.CartProducts.Any() ? (Model.TotalPrice + 99).ToString("c") : Model.TotalPrice.ToString("c")))
+                                <td style="text-align:center;" class="price-display">
+                                    @(Model.TotalPrice > 999 ? Model.TotalPrice.ToString("#,##0.00") : (Model.CartProducts.Any() ? (Model.TotalPrice + 99).ToString("#,##0.00") : Model.TotalPrice.ToString("#,##0.00"))) ₺
                                 </td>
                             </tr>
                         </table>
@@ -658,7 +648,7 @@
 
                                 <div class="col-md-12">
                                     <label class="form-label">Kart Numarası</label>
-                                    <input type="text" name="CardNumber" class="form-control" placeholder="XXXX XXXX XXXX XXXX" required />
+                                    <input type="text" name="CardNumber" class="form-control" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" oninput="formatCardNumber(this)" required />
                                 </div>
 
                                 <div class="col-md-9">
@@ -669,7 +659,7 @@
                                                 <option disabled selected value="">Ay</option>
                                                 @for (int i = 1; i <= 12; i++)
                                                 {
-                                                    <option value="@i">@i.ToString("00")</option>
+                                                    <option value="@i.ToString("00")">@i.ToString("00")</option>
                                                 }
                                             </select>
                                         </div>
@@ -678,7 +668,7 @@
                                                 <option disabled selected value="">Yıl</option>
                                                 @for (int i = DateTime.Now.Year; i <= DateTime.Now.Year + 10; i++)
                                                 {
-                                                    <option value="@i">@i</option>
+                                                    <option value="@i.ToString().Substring(2)">@i</option>
                                                 }
                                             </select>
                                         </div>
@@ -687,7 +677,7 @@
 
                                 <div class="col-md-3">
                                     <label class="form-label">CVV</label>
-                                    <input type="text" name="CVV" class="form-control" placeholder="123" maxlength="4" required />
+                                    <input type="text" name="CVV" class="form-control" placeholder="123" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required />
                                 </div>
                             </div>
                         </div>
@@ -728,6 +718,13 @@
             if (deliveryRadio) {
                 deliveryRadio.checked = true;
             }
+        }
+
+        // Kart numarası formatlaması
+        function formatCardNumber(input) {
+            let value = input.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+            let formattedInputValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            input.value = formattedInputValue;
         }
 
         // Form gönderme animasyonu

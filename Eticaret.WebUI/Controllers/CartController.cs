@@ -8,6 +8,7 @@ using Iyzipay.Model;
 using Iyzipay.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace Eticaret.WebUI.Controllers
 {
@@ -95,6 +96,7 @@ namespace Eticaret.WebUI.Controllers
             {
                 return RedirectToAction("SignIn", "Account");
             }
+
             var addresses = await _serviceAddress.GetAllAsync(a => a.AppUserId == appUser.Id && a.IsActive);
             var model = new CheckOutViewModel()
             {
@@ -107,7 +109,8 @@ namespace Eticaret.WebUI.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Checkout(string CardNumber, string CardNameSurname, string CardMonth, string CardYear, string CVV, string DeliveryAddress, string BillingAddress)
+        public async Task<IActionResult> Checkout(string CardNumber, string CardNameSurname,
+            string CardMonth, string CardYear, string CVV, string DeliveryAddress, string BillingAddress)
         {
             var cart = GetCart();
             var appUser = await _serviceAppUser.GetAsync(x => x.UserGuid.ToString() == HttpContext.User.FindFirst("UserGuid").Value);
@@ -128,6 +131,7 @@ namespace Eticaret.WebUI.Controllers
                 string.IsNullOrWhiteSpace(CardMonth) || string.IsNullOrWhiteSpace(CVV) ||
                 string.IsNullOrWhiteSpace(DeliveryAddress) || string.IsNullOrWhiteSpace(BillingAddress))
             {
+                TempData["Message"] = "<div class='alert alert-danger'>Lütfen tüm alanları doldurunuz!</div>";
                 return View(model);
             }
 
@@ -150,122 +154,130 @@ namespace Eticaret.WebUI.Controllers
                 TotalPrice = cart.TotalPrice(),
                 OrderNumber = Guid.NewGuid().ToString(),
                 OrderState = 0,
-                OrderLines = []
+                OrderLines = new List<OrderLine>()
             };
 
             #region OdemeIslemi
-            Options options = new Options
-            {
-                ApiKey = _configuration["IyzicOptions:ApiKey"],
-                SecretKey = _configuration["IyzicOptions:SecretKey"],
-                BaseUrl = _configuration["IyzicOptions:BaseUrl"]
-            };
-
-            CreatePaymentRequest request = new CreatePaymentRequest
-            {
-                Locale = Locale.TR.ToString(),
-                ConversationId = HttpContext.Session.Id,
-                Price = siparis.TotalPrice.ToString().Replace(",", "."),
-                PaidPrice = siparis.TotalPrice.ToString().Replace(",", "."),
-                Currency = Currency.TRY.ToString(),
-                Installment = 1,
-                BasketId = "B" + HttpContext.Session.Id,
-                PaymentChannel = PaymentChannel.WEB.ToString(),
-                PaymentGroup = PaymentGroup.PRODUCT.ToString()
-            };
-
-            PaymentCard paymentCard = new PaymentCard
-            {
-                CardHolderName = CardNameSurname,
-                CardNumber = CardNumber,
-                ExpireMonth = CardMonth,
-                ExpireYear = CardYear,
-                Cvc = CVV,
-                RegisterCard = 0
-            };
-            request.PaymentCard = paymentCard;
-
-            Buyer buyer = new Buyer
-            {
-                Id = "BY" + appUser.Id,
-                Name = appUser.Name,
-                Surname = appUser.SurName,
-                GsmNumber = appUser.Phone,
-                Email = appUser.Email,
-                IdentityNumber = "11111111111",
-                LastLoginDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                RegistrationDate = appUser.CreateDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                RegistrationAddress = siparis.DeliveryAddress,
-                Ip = HttpContext.Connection.RemoteIpAddress?.ToString(),
-                City = teslimatAdresi.City,
-                Country = "Turkey",
-                ZipCode = "34732"
-            };
-            request.Buyer = buyer;
-
-            var shippingAddress = new Iyzipay.Model.Address
-            {
-                ContactName = appUser.Name + " " + appUser.SurName,
-                City = teslimatAdresi.City,
-                Country = "Turkey",
-                Description = teslimatAdresi.OpenAddress,
-                ZipCode = "34742"
-            };
-            request.ShippingAddress = shippingAddress;
-
-            var billingAddress = new Iyzipay.Model.Address
-            {
-                ContactName = appUser.Name + " " + appUser.SurName,
-                City = faturaAdresi.City,
-                Country = "Turkey",
-                Description = faturaAdresi.OpenAddress,
-                ZipCode = "34742"
-            };
-            request.BillingAddress = billingAddress;
-
-            List<BasketItem> basketItems = new List<BasketItem>();
-            foreach (var item in cart.CartLines)
-            {
-                siparis.OrderLines.Add(new OrderLine
-                {
-                    ProductId = item.Product.Id,
-                    OrderId = siparis.Id,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.Product.Price,
-                });
-
-                basketItems.Add(new BasketItem
-                {
-                    Id = item.Product.Id.ToString(),
-                    Name = item.Product.Name,
-                    Category1 = "Collectibles",
-                    ItemType = BasketItemType.PHYSICAL.ToString(),
-                    Price = (item.Product.Price * item.Quantity).ToString().Replace(",", ".")
-                });
-            }
-
-            if (siparis.TotalPrice < 999)
-            {
-                basketItems.Add(new BasketItem
-                {
-                    Id = "Kargo",
-                    Name = "Kargo Ücreti",
-                    Category1 = "Kargo Ücreti",
-                    ItemType = BasketItemType.VIRTUAL.ToString(),
-                    Price = "99"
-                });
-                siparis.TotalPrice += 99;
-                request.Price = siparis.TotalPrice.ToString().Replace(",", ".");
-                request.PaidPrice = siparis.TotalPrice.ToString().Replace(",", ".");
-            }
-
-            request.BasketItems = basketItems;
-
-            Payment payment = await Payment.Create(request, options);
-            #endregion
-
             try
             {
+                Options options = new Options
+                {
+                    ApiKey = _configuration["IyzicOptions:ApiKey"],
+                    SecretKey = _configuration["IyzicOptions:SecretKey"],
+                    BaseUrl = _configuration["IyzicOptions:BaseUrl"]
+                };
+
+                // Türk kültür ayarlarını kullanarak para birimini sabitliyoruz
+                var turkishCulture = new CultureInfo("tr-TR");
+
+                CreatePaymentRequest request = new CreatePaymentRequest
+                {
+                    Locale = Locale.TR.ToString(),
+                    ConversationId = HttpContext.Session.Id,
+                    // Fiyatları TL olarak sabitliyoruz - nokta kullanarak format
+                    Price = siparis.TotalPrice.ToString("F2", CultureInfo.InvariantCulture),
+                    PaidPrice = siparis.TotalPrice.ToString("F2", CultureInfo.InvariantCulture),
+                    Currency = Currency.TRY.ToString(), // TL para birimi zorunlu
+                    Installment = 1,
+                    BasketId = "B" + HttpContext.Session.Id,
+                    PaymentChannel = PaymentChannel.WEB.ToString(),
+                    PaymentGroup = PaymentGroup.PRODUCT.ToString()
+                };
+
+                PaymentCard paymentCard = new PaymentCard
+                {
+                    CardHolderName = CardNameSurname?.Trim(),
+                    CardNumber = CardNumber?.Replace(" ", "").Replace("-", ""), // Boşluk ve tire temizle
+                    ExpireMonth = CardMonth?.PadLeft(2, '0'), // 01, 02 formatı
+                    ExpireYear = CardYear,
+                    Cvc = CVV,
+                    RegisterCard = 0
+                };
+
+                request.PaymentCard = paymentCard;
+
+                Buyer buyer = new Buyer
+                {
+                    Id = "BY" + appUser.Id,
+                    Name = appUser.Name,
+                    Surname = appUser.SurName,
+                    GsmNumber = appUser.Phone,
+                    Email = appUser.Email,
+                    IdentityNumber = "11111111111",
+                    LastLoginDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    RegistrationDate = appUser.CreateDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                    RegistrationAddress = siparis.DeliveryAddress,
+                    Ip = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                    City = teslimatAdresi.City,
+                    Country = "Turkey",
+                    ZipCode = "34732"
+                };
+                request.Buyer = buyer;
+
+                var shippingAddress = new Iyzipay.Model.Address
+                {
+                    ContactName = appUser.Name + " " + appUser.SurName,
+                    City = teslimatAdresi.City,
+                    Country = "Turkey",
+                    Description = teslimatAdresi.OpenAddress,
+                    ZipCode = "34742"
+                };
+                request.ShippingAddress = shippingAddress;
+
+                var billingAddress = new Iyzipay.Model.Address
+                {
+                    ContactName = appUser.Name + " " + appUser.SurName,
+                    City = faturaAdresi.City,
+                    Country = "Turkey",
+                    Description = faturaAdresi.OpenAddress,
+                    ZipCode = "34742"
+                };
+                request.BillingAddress = billingAddress;
+
+                List<BasketItem> basketItems = new List<BasketItem>();
+
+                foreach (var item in cart.CartLines)
+                {
+                    siparis.OrderLines.Add(new OrderLine
+                    {
+                        ProductId = item.Product.Id,
+                        OrderId = siparis.Id,
+                        Quantity = item.Quantity,
+                        UnitPrice = item.Product.Price,
+                    });
+
+                    basketItems.Add(new BasketItem
+                    {
+                        Id = item.Product.Id.ToString(),
+                        Name = item.Product.Name,
+                        Category1 = "Collectibles",
+                        ItemType = BasketItemType.PHYSICAL.ToString(),
+                        // Fiyatları TL olarak formatla
+                        Price = (item.Product.Price * item.Quantity).ToString("F2", CultureInfo.InvariantCulture)
+                    });
+                }
+
+                // Kargo ücreti kontrolü
+                if (siparis.TotalPrice < 999)
+                {
+                    basketItems.Add(new BasketItem
+                    {
+                        Id = "Kargo",
+                        Name = "Kargo Ücreti",
+                        Category1 = "Kargo Ücreti",
+                        ItemType = BasketItemType.VIRTUAL.ToString(),
+                        Price = "99.00" // Kargo ücretini sabit TL olarak
+                    });
+
+                    siparis.TotalPrice += 99;
+                    request.Price = siparis.TotalPrice.ToString("F2", CultureInfo.InvariantCulture);
+                    request.PaidPrice = siparis.TotalPrice.ToString("F2", CultureInfo.InvariantCulture);
+                }
+
+                request.BasketItems = basketItems;
+
+                Payment payment = await Payment.Create(request, options);
+
                 if (payment.Status == "success")
                 {
                     await _serviceOrder.AddAsync(siparis);
@@ -273,20 +285,29 @@ namespace Eticaret.WebUI.Controllers
                     if (sonuc > 0)
                     {
                         HttpContext.Session.Remove("Cart");
+                        TempData["Message"] = "<div class='alert alert-success'>Ödeme başarılı! Siparişiniz alınmıştır.</div>";
                         return RedirectToAction("Thanks");
+                    }
+                    else
+                    {
+                        TempData["Message"] = "<div class='alert alert-danger'>Sipariş kaydedilemedi! Lütfen destek ile iletişime geçin.</div>";
                     }
                 }
                 else
                 {
-                    TempData["Message"] =
-                        $"<div class='alert alert-danger'> Ödeme İşlemi Başarısız! </div>({payment.ErrorMessage ?? "Bilinmeyen hata."})";
-                    return RedirectToAction("Checkout");
+                    // Detaylı hata bilgilerini loglayın
+                    //var errorDetails = $"ErrorCode: {payment.ErrorCode}, ErrorMessage: {payment.ErrorMessage}, ErrorGroup: {payment.ErrorGroup}, Status: {payment.Status}";
+
+                    TempData["Message"] = $"<div class='alert alert-danger'>Geçersiz kart bilgisi. Iyzico test kartlarını kullanmayı deneyebilirsiniz! (9792030000000000)</div>";
+
                 }
+
             }
             catch (Exception ex)
             {
-                TempData["Message"] = $"<div class='alert alert-danger'> Hata Oluştu! ({ex.Message}) </div>";
+                TempData["Message"] = $"<div class='alert alert-danger'>Hata Oluştu! ({ex.Message})</div>";
             }
+            #endregion
 
             return View(model);
         }

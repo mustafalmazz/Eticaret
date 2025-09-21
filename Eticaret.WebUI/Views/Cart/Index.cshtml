@@ -444,6 +444,13 @@
                 text-decoration: none;
                 color: white !important;
             }
+
+        /* Para birimi gösterimi için sabit stil */
+        .price-display {
+            color: var(--primary-orange) !important;
+            font-weight: 700 !important;
+            font-size: 1rem !important;
+        }
     </style>
 </head>
 <body>
@@ -483,11 +490,11 @@
                                                 @item.Product.Name
                                             </a>
                                         </td>
-                                        <td>@item.Product.Price.ToString("c")</td>
+                                        <td class="price-display">@item.Product.Price.ToString("#,##0.00") ₺</td>
                                         <td>
                                             @item.Quantity
                                         </td>
-                                        <td>@((item.Quantity * item.Product.Price).ToString("c"))</td>
+                                        <td class="price-display">@((item.Quantity * item.Product.Price).ToString("#,##0.00")) ₺</td>
                                         <td>
                                             <form asp-action="Remove" asp-controller="Cart">
                                                 <input type="hidden" name="ProductId" value="@item.Product.Id" />
@@ -510,18 +517,18 @@
                         <table class="table">
                             <tr>
                                 <td>Ara Toplam</td>
-                                <td>@Model.TotalPrice.ToString("c")</td>
+                                <td class="price-display">@Model.TotalPrice.ToString("#,##0.00") ₺</td>
                             </tr>
                             <tr>
                                 <td>Kargo</td>
-                                <td>
-                                    @(Model.TotalPrice > 999 ? "Ücretsiz" : Model.CartLines.Any() ? "₺99" : "₺0")
+                                <td class="price-display">
+                                    @(Model.TotalPrice > 999 ? "Ücretsiz" : Model.CartLines.Any() ? "99,00 ₺" : "0,00 ₺")
                                 </td>
                             </tr>
                             <tr>
                                 <th style="color:white; text-align:center;">Sipariş Toplamı</th>
-                                <td style="text-align:center;">
-                                    @(Model.TotalPrice > 999 ? Model.TotalPrice.ToString("c") : (Model.CartLines.Any() ? (Model.TotalPrice + 99).ToString("c") : Model.TotalPrice.ToString("c")))
+                                <td style="text-align:center;" class="price-display">
+                                    @(Model.TotalPrice > 999 ? Model.TotalPrice.ToString("#,##0.00") : (Model.CartLines.Any() ? (Model.TotalPrice + 99).ToString("#,##0.00") : Model.TotalPrice.ToString("#,##0.00"))) ₺
                                 </td>
                             </tr>
                         </table>
@@ -582,14 +589,6 @@
             this.disabled = true;
         });
 
-        window.addEventListener("wheel", function(e) {
-            e.preventDefault();
-            window.scrollBy({
-                top: e.deltaY,
-                left: 0,
-                behavior: "smooth"
-            });
-        }, { passive: false });
     </script>
 </body>
 </html>

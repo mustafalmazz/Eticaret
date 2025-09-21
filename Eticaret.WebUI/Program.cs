@@ -2,6 +2,10 @@ using Eticaret.Data;
 using Eticaret.Service.Abstract;
 using Eticaret.Service.Concrete;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
+using System.Globalization;
 using System.Security.Claims;
 
 namespace Eticaret.WebUI
@@ -12,7 +16,12 @@ namespace Eticaret.WebUI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+          
+            var turkishCulture = new CultureInfo("tr-TR");
+            CultureInfo.DefaultThreadCurrentCulture = turkishCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = turkishCulture;
+
+        
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddSession(options =>
@@ -23,8 +32,20 @@ namespace Eticaret.WebUI
                 options.IdleTimeout = TimeSpan.FromDays(1);
                 options.IOTimeout = TimeSpan.FromMinutes(10);
             });
+
            
-            builder.Services.AddDbContext<DatabaseContext>();
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[] { turkishCulture };
+                options.DefaultRequestCulture = new RequestCulture(turkishCulture);
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
+
+            builder.Services.AddDbContext<DatabaseContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection"));
+            });
 
             builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 
@@ -39,8 +60,8 @@ namespace Eticaret.WebUI
 
             builder.Services.AddAuthorization(m =>
             {
-                m.AddPolicy("AdminPolicy",policy=>policy.RequireClaim(ClaimTypes.Role,"Admin"));
-                m.AddPolicy("UserPolicy",policy=>policy.RequireClaim(ClaimTypes.Role,"Admin","User","Customer"));
+                m.AddPolicy("AdminPolicy", policy => policy.RequireClaim(ClaimTypes.Role, "Admin"));
+                m.AddPolicy("UserPolicy", policy => policy.RequireClaim(ClaimTypes.Role, "Admin", "User", "Customer"));
             });
 
             var app = builder.Build();
@@ -49,21 +70,21 @@ namespace Eticaret.WebUI
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
+            app.UseRequestLocalization();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-            app.UseSession(); //session kullanmaya yarar
+            app.UseSession(); 
+            app.UseAuthentication(); 
+            app.UseAuthorization();
 
-            app.UseAuthentication(); // önce oturum açma 
-            app.UseAuthorization();// sonra yetkilendirme
             app.MapControllerRoute(
-            name: "admin",
-            pattern: "{area:exists}/{controller=Main}/{action=Index}/{id?}");
+                name: "admin",
+                pattern: "{area:exists}/{controller=Main}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",

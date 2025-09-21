@@ -290,11 +290,7 @@
                 <div class="text-center">
                     <!-- Product name-->
                     <h5 class="fw-bolder">@Model.Name</h5>
-                    <!-- Product price-->
-                    @* <span class="text-danger text-decoration-line-through"> *@
-                    @*     @((Model.Price * 12 / 10).ToString("c")) *@
-                    @* </span><br /> *@
-                    @Model.Price.ToString("c")
+                    @Model.Price.ToString("#,##0.00") ₺
                 </div>
             </div>
             <!-- Product actions-->

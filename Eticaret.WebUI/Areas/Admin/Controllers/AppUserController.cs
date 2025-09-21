@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Eticaret.WebUI.Areas.Admin.Controllers
 {
-    [Area("Admin"),Authorize(Policy = "AdminPolicy")]
-
+    [Area("Admin"), Authorize(Policy = "AdminPolicy")]
     public class AppUserController : Controller
     {
         private readonly DatabaseContext _context;
