@@ -29,3 +29,15 @@ Projeyi kendi yerel ortamınızda çalıştırmak için aşağıdaki adımları 
 1. Bu depoyu klonlayın:
    ```bash
    git clone https://github.com/mustafalmazz/Eticaret.git
+## 📸 Uygulama Görüntüleri
+
+### Ana Sayfa ve Ürünler
+![Ana Sayfa](EticaretImages/Ana.png)
+![Ürün Listesi](EticaretImages/Liste.png)
+
+### Ürün Detay ve Sepet İşlemleri
+![Ürün Detayı](EticaretImages/Detay.png)
+![Sepet Ekranı](EticaretImages/Sepet.png)
+
+### Harita ile Dinamik Adres Seçimi (Leaflet.js)
+![Adres Seçimi](EticaretImages/Adres.png)
