@@ -28,4 +28,4 @@ Projeyi kendi yerel ortamınızda çalıştırmak için aşağıdaki adımları 
 
 1. Bu depoyu klonlayın:
    ```bash
-   git clone [https://github.com/mustafalmazz/](https://github.com/mustafalmazz/)[REPO_ADIN].git
+   git clone https://github.com/mustafalmazz/Eticaret.git
